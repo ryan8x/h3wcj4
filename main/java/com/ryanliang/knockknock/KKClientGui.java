@@ -8,6 +8,9 @@ package com.ryanliang.knockknock;
 import java.awt.BorderLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.BufferedReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -21,8 +24,8 @@ import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 
-public class KKServerGui extends JFrame {
-	
+public class KKClientGui extends JFrame {
+
 	private final JMenuBar menuBar = new JMenuBar();
 	private final JMenu fileMenu = new JMenu("File");
 	private final JMenu editMenu = new JMenu("Edit");
@@ -44,14 +47,11 @@ public class KKServerGui extends JFrame {
 	private final JLabel searchResultLabel = new JLabel("Search result: ");
 	private JLabel searchResultStatus = new JLabel("");
 	
-    //private ServerSocket serverSocket = null;
-    //private boolean listening = false;
+	private BackgroundSocketClient task = null;
 	
-	private BackgroundSocketListener task = null;
-    
-	public KKServerGui(){
+	public KKClientGui(){
 		
-		super("Knock Knock Server");
+		super("Knock Knock Client");
 				
 		organizeUI();
 		addListeners();
@@ -85,12 +85,12 @@ public class KKServerGui extends JFrame {
 	}
 	
 	private void addListeners() {
-		startServerFileMenu.addActionListener(event -> startServer());
-		stopServerFileMenu.addActionListener(event -> stopServer());
+		startServerFileMenu.addActionListener(event -> startClient());
+		stopServerFileMenu.addActionListener(event -> stopClient());
 		exitFileMenu.addActionListener(event -> quitApp());
 	
 		aboutHelpMenu.addActionListener(event -> {
-			JOptionPane.showMessageDialog(null, "Knock Knock Server v1.0 Copyright 2017 RLTech Inc");
+			JOptionPane.showMessageDialog(null, "Knock Knock Client v1.0 Copyright 2017 RLTech Inc");
 		});
 		
 		//newEditMenu.addActionListener(event -> newItem());
@@ -105,19 +105,18 @@ public class KKServerGui extends JFrame {
 		});
 	}
 
-	private void stopServer() {
-		
+	private void stopClient() {
+
 		if (task != null){
 			task.stopServer();
 			task = null;
 		}
-
 	}
 
-	private void startServer() {
+	private void startClient() {
 		
 		if (task == null){
-			task = new BackgroundSocketListener(null, null);
+			task = new BackgroundSocketClient("test", searchResultStatus);
 			task.execute();	
 		}
 	}
@@ -125,7 +124,7 @@ public class KKServerGui extends JFrame {
 	private void quitApp() {
     	int answer = JOptionPane.showConfirmDialog(null, "Exit App?");
     	if (answer == JOptionPane.YES_OPTION){
-    		stopServer(); 
+    		stopClient(); 
     		System.exit(0);
     	}
     }

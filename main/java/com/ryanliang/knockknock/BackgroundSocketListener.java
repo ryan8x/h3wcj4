@@ -2,6 +2,7 @@ package com.ryanliang.knockknock;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.SocketTimeoutException;
 
 import javax.swing.SwingWorker;
 
@@ -18,7 +19,6 @@ public class BackgroundSocketListener extends SwingWorker<Boolean, Object> {
 	public Boolean doInBackground(){
 		System.out.println("bg");
 		startServer();
-		stopServer();
 		
 		return true;
 	}
@@ -32,7 +32,7 @@ public class BackgroundSocketListener extends SwingWorker<Boolean, Object> {
 		this.listening = listening;
 	}
 	
-	private void stopServer() {
+	public void stopServer() {
 		System.out.println("stop");
 		try {
 			if (serverSocket != null){
@@ -44,6 +44,7 @@ public class BackgroundSocketListener extends SwingWorker<Boolean, Object> {
 		}
 		finally{
 			listening = false;
+			System.out.println("stop2");
 		}
 
 	}
@@ -57,7 +58,6 @@ public class BackgroundSocketListener extends SwingWorker<Boolean, Object> {
         } catch (IOException e) {
             System.err.println("Could not listen on port: 4444.");
             e.printStackTrace();
-            stopServer();
         }
 
         try {
@@ -66,9 +66,9 @@ public class BackgroundSocketListener extends SwingWorker<Boolean, Object> {
 				new KKMultiServerThread(serverSocket.accept()).start();
 				System.out.println("start-c");
 			}
-		} catch (IOException e) {
+		}
+        catch (IOException e) {
             e.printStackTrace();
-            stopServer();
 		}
 	}
 }
