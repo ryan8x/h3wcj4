@@ -35,7 +35,7 @@ public class KnockKnockClient {
 			System.out.println("Server: " + fromServer);
 			if (fromServer.equals("Bye."))
 				break;
-
+			
 			fromUser = stdIn.readLine();
 			if (fromUser != null) {
 				System.out.println("Client: " + fromUser);

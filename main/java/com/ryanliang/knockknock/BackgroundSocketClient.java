@@ -16,6 +16,8 @@ import javax.swing.SwingWorker;
 
 public class BackgroundSocketClient extends SwingWorker<String, String> {
 	
+	private String userInput = null;
+	private String userInputHelper = null;
     private JLabel responseLabelText;
 	private Socket kkSocket = null;
 	private PrintWriter out = null;
@@ -50,7 +52,7 @@ public class BackgroundSocketClient extends SwingWorker<String, String> {
 		} catch (IOException e) {
 			System.err.println("Couldn't get I/O for the connection to: localhost");
 		}
-		BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
+		//BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
 		String fromServer;
 		String fromUser;
 
@@ -60,16 +62,18 @@ public class BackgroundSocketClient extends SwingWorker<String, String> {
 				publish(fromServer);
 				if (fromServer.equals("Bye."))
 					break;
-
-				fromUser = stdIn.readLine();
+				
+				fromUser = getUserInput();
+				System.out.println(fromUser + "??");
 				if (fromUser != null) {
-					System.out.println("Client: " + fromUser);
 					out.println(fromUser);
+					userInput = null;
 				}
+
 			}
 			out.close();
 			in.close();
-			stdIn.close();
+			//stdIn.close();
 			kkSocket.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -77,6 +81,10 @@ public class BackgroundSocketClient extends SwingWorker<String, String> {
 
 	}
 	
+	private String getUserInput() {
+		
+		return userInput;		
+	}
 	public void stopServer() {
 		System.out.println("stop-c");
 		try {
@@ -90,6 +98,11 @@ public class BackgroundSocketClient extends SwingWorker<String, String> {
 			e.printStackTrace();
 		}
 
+	}
+	public void processUserInput(String userInput) {
+		this.userInput = userInput;
+		System.out.println("received input");
+		
 	}
 
 }

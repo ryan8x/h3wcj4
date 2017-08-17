@@ -6,6 +6,7 @@
 package com.ryanliang.knockknock;
 
 import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
@@ -20,6 +21,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
@@ -42,10 +44,16 @@ public class KKClientGui extends JFrame {
 	private final JButton newToolBarButton = new JButton("New"); 
 	
 	private final JToolBar toolBar = new JToolBar();
+	private final JPanel westPanel = new JPanel();
+	private final JPanel centerPanel = new JPanel();
 	private final JPanel statusPanel = new JPanel();
 	
 	private final JLabel searchResultLabel = new JLabel("Search result: ");
 	private JLabel searchResultStatus = new JLabel("");
+	
+	private JLabel serverResponseLabel = new JLabel("");
+	private JTextArea userInputTextArea = new JTextArea();
+	private JButton sendButton = new JButton("Send");
 	
 	private BackgroundSocketClient task = null;
 	
@@ -77,7 +85,15 @@ public class KKClientGui extends JFrame {
 		toolBar.add(newToolBarButton);
 
 		add(toolBar, BorderLayout.NORTH);
-				
+		add(westPanel, BorderLayout.WEST);
+		add(centerPanel, BorderLayout.CENTER);
+		westPanel.add(new JLabel("      "));
+		
+		centerPanel.setLayout(new GridLayout(0,1));
+		centerPanel.add(serverResponseLabel);
+		centerPanel.add(userInputTextArea);
+		centerPanel.add(sendButton);
+		
 		statusPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
 		add(statusPanel, BorderLayout.SOUTH);
 		statusPanel.add(searchResultLabel);
@@ -93,6 +109,9 @@ public class KKClientGui extends JFrame {
 			JOptionPane.showMessageDialog(null, "Knock Knock Client v1.0 Copyright 2017 RLTech Inc");
 		});
 		
+		sendButton.addActionListener(event -> sendUserInput());
+		
+		
 		//newEditMenu.addActionListener(event -> newItem());
 		
 	
@@ -103,6 +122,14 @@ public class KKClientGui extends JFrame {
 		    	quitApp();	
 		    }
 		});
+	}
+
+	private void sendUserInput() {
+		String userInput = userInputTextArea.getText();
+		
+		if (task != null){
+			task.processUserInput(userInput);
+		}
 	}
 
 	private void stopClient() {
@@ -116,7 +143,7 @@ public class KKClientGui extends JFrame {
 	private void startClient() {
 		
 		if (task == null){
-			task = new BackgroundSocketClient("test", searchResultStatus);
+			task = new BackgroundSocketClient("test", serverResponseLabel);
 			task.execute();	
 		}
 	}
