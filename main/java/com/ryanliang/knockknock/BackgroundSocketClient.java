@@ -63,36 +63,54 @@ public class BackgroundSocketClient extends SwingWorker<String, String> {
 				if (fromServer.equals("Bye."))
 					break;
 				
-				fromUser = getUserInput();
-				System.out.println(fromUser + "??");
-				if (fromUser != null) {
-					out.println(fromUser);
+				getUserInput();
+				if (userInput != null) {
+					out.println(userInput);
 					userInput = null;
 				}
 
 			}
-			out.close();
+			stopServer();
+			
+/*			out.close();
+			out = null;
 			in.close();
+			in = null;
 			//stdIn.close();
 			kkSocket.close();
+			kkSocket = null;
+*/			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
 	}
 	
-	private String getUserInput() {
+	private void getUserInput() {
 		
-		return userInput;		
+		while (userInput == null)
+		{
+			//wait for user input
+			System.out.println("waiting for user input");
+			try {
+				Thread.sleep(200);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+				
 	}
 	public void stopServer() {
 		System.out.println("stop-c");
 		try {
 			if (kkSocket != null){
 				out.close();
+				out = null;
 				in.close();
-				//stdIn.close();
+				in = null;
 				kkSocket.close();
+				kkSocket = null;
+				userInput = "exit";
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
