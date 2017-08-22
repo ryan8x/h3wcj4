@@ -32,7 +32,7 @@ public class KKMultiServerThread extends Thread {
 			while ((inputLine = in.readLine()) != null) {
 				outputLine = kkp.processInput(inputLine);
 				out.println(outputLine);
-				if (outputLine.equals("Bye"))
+				if (outputLine.equals("Bye"))  //possible bug here???  but maybe fixed now.
 					break;
 			}
 			out.close();

@@ -17,7 +17,6 @@ public class BackgroundSocketListener extends SwingWorker<Boolean, Object> {
     }
 	@Override
 	public Boolean doInBackground(){
-		System.out.println("bg");
 		startServer();
 		
 		return true;
@@ -28,7 +27,6 @@ public class BackgroundSocketListener extends SwingWorker<Boolean, Object> {
 	}
 	
 	public void setListening(boolean listening) {
-		System.out.println("set");
 		this.listening = listening;
 	}
 	
@@ -44,13 +42,11 @@ public class BackgroundSocketListener extends SwingWorker<Boolean, Object> {
 		}
 		finally{
 			listening = false;
-			System.out.println("stop2");
 		}
 
 	}
 
 	private void startServer() {
-		System.out.println("start-a");
 		listening = true;
 		
         try {
@@ -62,9 +58,7 @@ public class BackgroundSocketListener extends SwingWorker<Boolean, Object> {
 
         try {
 			while (listening){
-				System.out.println("start-b");
 				new KKMultiServerThread(serverSocket.accept()).start();
-				System.out.println("start-c");
 			}
 		}
         catch (IOException e) {

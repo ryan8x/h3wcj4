@@ -7,6 +7,7 @@ package com.ryanliang.knockknock;
 
 import java.net.*;
 import java.io.*;
+import com.ryanliang.tool.util.RandomGenerator;
 
 public class KnockKnockProtocol {
 	private static final int WAITING = 0;
@@ -17,7 +18,7 @@ public class KnockKnockProtocol {
 	private static final int NUMJOKES = 5;
 
 	private int state = WAITING;
-	private int currentJoke = 0;
+	private int currentJoke = RandomGenerator.generateRandomNum(0, 4);
 
 	private String[] clues = { "Turnip", "Little Old Lady", "Atch", "Who", "Who" };
 	private String[] answers = { "Turnip the heat, it's cold in here!",
@@ -60,7 +61,7 @@ public class KnockKnockProtocol {
 					currentJoke++;
 				state = SENTKNOCKKNOCK;
 			} else {
-				theOutput = "Bye.";
+				theOutput = "Bye";
 				state = WAITING;
 			}
 		}

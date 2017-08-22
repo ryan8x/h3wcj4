@@ -125,9 +125,10 @@ public class KKClientGui extends JFrame {
 	}
 
 	private void sendUserInput() {
-		String userInput = userInputTextArea.getText();
+		String userInput = userInputTextArea.getText().trim();
+		userInputTextArea.setText("");
 		
-		if (task != null){
+		if (task != null && !userInput.equals("")){
 			task.processUserInput(userInput);
 		}
 	}
