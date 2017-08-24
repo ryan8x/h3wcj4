@@ -3,39 +3,21 @@ package com.ryanliang.knockknock;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
-public class ReadLine {
-	
+public class KKModel implements KKModellable {
 	private static Scanner input;
-	private static List<KKJoke> kkJokeList = new ArrayList<KKJoke>(50);
+	private List<KKJoke> kkJokeList = new ArrayList<KKJoke>(50);
 	private static String delimiter = "###";	
 	
-	public static void main(String[] args) {
+	public KKModel(){
 		openFile();
-		readRecords();
+		readFile();
 		closeFile();
-		displayJokes();
-
 	}
-
-	private static void displayJokes() {
-	
-		Collections.shuffle(kkJokeList);
-		/*
-		for (KKJoke joke : kkJokeList){
-			System.out.println(joke.getClue());
-			System.out.println(joke.getAnswer());
-		}
-		*/
-		System.out.println(kkJokeList.get(0).getClue());
-		System.out.println(kkJokeList.get(0).getAnswer());
-	}
-
-	private static void openFile() {
+	private void openFile() {
 		
 		try {
 			input = new Scanner(Paths.get("clients.txt"));
@@ -43,10 +25,9 @@ public class ReadLine {
 			System.err.println("Error opening file");
 			//e.printStackTrace();
 		}
-		
 	}
 
-	private static void readRecords() {
+	private void readFile() {
 		String clue;
 		String answer;
 		String line;
@@ -71,13 +52,16 @@ public class ReadLine {
 		catch (IllegalStateException e) {
 			System.err.println("Error reading from file");
 		}
-		
 	}
 
-	private static void closeFile() {
+	private void closeFile() {
 		if (input != null)
 			input.close();
-		
 	}
-
+	
+	@Override
+	public List<KKJoke> getData() {
+		
+		return kkJokeList;	
+	}
 }

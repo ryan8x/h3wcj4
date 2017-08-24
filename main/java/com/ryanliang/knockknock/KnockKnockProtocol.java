@@ -6,27 +6,30 @@
 package com.ryanliang.knockknock;
 
 import java.net.*;
+import java.util.Collections;
+import java.util.List;
 import java.io.*;
-import com.ryanliang.tool.util.RandomGenerator;
 
-public class KnockKnockProtocol {
+public class KnockKnockProtocol{
 	private static final int WAITING = 0;
 	private static final int SENTKNOCKKNOCK = 1;
 	private static final int SENTCLUE = 2;
 	private static final int ANOTHER = 3;
 
-	private static final int NUMJOKES = 5;
+	private final int NUMJOKES;
 
 	private int state = WAITING;
-	private int currentJoke = RandomGenerator.generateRandomNum(0, 4);
+	private int currentJoke = 0;
+	
+	private KKModellable model;
+	private List<KKJoke> kkJokeList;
 
-	private String[] clues = { "Turnip", "Little Old Lady", "Atch", "Who", "Who" };
-	private String[] answers = { "Turnip the heat, it's cold in here!",
-			"I didn't know you could yodel!",
-			"Bless you!",
-			"Is there an owl in here?",
-	"Is there an echo in here?" };
-
+	public KnockKnockProtocol(){
+		model = new KKModel();
+		kkJokeList = model.getData();
+		Collections.shuffle(kkJokeList);
+		NUMJOKES = kkJokeList.size();
+	}
 	public String processInput(String theInput) {
 		String theOutput = null;
 
@@ -35,19 +38,19 @@ public class KnockKnockProtocol {
 			state = SENTKNOCKKNOCK;
 		} else if (state == SENTKNOCKKNOCK) {
 			if (theInput.equalsIgnoreCase("Who's there?")) {
-				theOutput = clues[currentJoke];
+				theOutput = kkJokeList.get(currentJoke).getClue();
 				state = SENTCLUE;
 			} else {
 				theOutput = "You're supposed to say \"Who's there?\"! " +
 						"Try again. Knock! Knock!";
 			}
 		} else if (state == SENTCLUE) {
-			if (theInput.equalsIgnoreCase(clues[currentJoke] + " who?")) {
-				theOutput = answers[currentJoke] + " Want another? (y/n)";
+			if (theInput.equalsIgnoreCase(kkJokeList.get(currentJoke).getClue() + " who?")) {
+				theOutput = kkJokeList.get(currentJoke).getAnswer() + " Want another? (y/n)";
 				state = ANOTHER;
 			} else {
 				theOutput = "You're supposed to say \"" + 
-						clues[currentJoke] + 
+						kkJokeList.get(currentJoke).getClue() + 
 						" who?\"" + 
 						"! Try again. Knock! Knock!";
 				state = SENTKNOCKKNOCK;
