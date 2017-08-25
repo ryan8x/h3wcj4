@@ -43,6 +43,7 @@ public class BackgroundSocketListener extends SwingWorker<Boolean, Object> {
 				for (KKMultiServerThread st : socketThreadList){
 					st.closeConnection();
 				}
+				socketThreadList.clear();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
