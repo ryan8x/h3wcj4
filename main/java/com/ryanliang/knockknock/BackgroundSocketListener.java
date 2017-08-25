@@ -40,8 +40,10 @@ public class BackgroundSocketListener extends SwingWorker<Boolean, Object> {
 				serverSocket.close();
 				serverSocket = null;
 				
-				for (KKMultiServerThread st : socketThreadList){
-					st.closeConnection();
+				for (KKMultiServerThread socketThread : socketThreadList){
+					if (socketThread != null){
+						socketThread.closeConnection();
+					}
 				}
 				socketThreadList.clear();
 			}

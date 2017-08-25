@@ -21,6 +21,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
@@ -51,7 +52,8 @@ public class KKClientGui extends JFrame {
 	private final JLabel searchResultLabel = new JLabel("Search result: ");
 	private JLabel searchResultStatus = new JLabel("");
 	
-	private JLabel serverResponseLabel = new JLabel("");
+	//private JLabel serverResponseLabel = new JLabel("");
+	private JTextArea chatTextArea = new JTextArea();
 	private JTextArea userInputTextArea = new JTextArea();
 	private JButton sendButton = new JButton("Send");
 	
@@ -89,8 +91,10 @@ public class KKClientGui extends JFrame {
 		add(centerPanel, BorderLayout.CENTER);
 		westPanel.add(new JLabel("      "));
 		
+		chatTextArea.setEditable(false);
+		
 		centerPanel.setLayout(new GridLayout(0,1));
-		centerPanel.add(serverResponseLabel);
+		centerPanel.add(new JScrollPane(chatTextArea));
 		centerPanel.add(userInputTextArea);
 		centerPanel.add(sendButton);
 		
@@ -129,6 +133,7 @@ public class KKClientGui extends JFrame {
 		userInputTextArea.setText("");
 		
 		if (task != null && !userInput.equals("")){
+			chatTextArea.append(userInput + "\n");
 			task.processUserInput(userInput);
 		}
 	}
@@ -144,7 +149,7 @@ public class KKClientGui extends JFrame {
 	private void startClient() {
 		
 		if (task == null){
-			task = new BackgroundSocketClient(serverResponseLabel);
+			task = new BackgroundSocketClient(chatTextArea);
 			task.execute();	
 		}
 	}

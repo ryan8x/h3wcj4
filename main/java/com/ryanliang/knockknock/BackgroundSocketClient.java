@@ -12,18 +12,19 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import javax.swing.JLabel;
+import javax.swing.JTextArea;
 import javax.swing.SwingWorker;
 
 public class BackgroundSocketClient extends SwingWorker<String, String> {
 	
 	private String userInput = null;
-    private JLabel responseLabelText;
+    private JTextArea chatTextArea;
 	private Socket kkSocket = null;
 	private PrintWriter out = null;
 	private BufferedReader in = null;
     
-    public BackgroundSocketClient(JLabel label){
-    	this.responseLabelText = label; 
+    public BackgroundSocketClient(JTextArea chatTextArea){
+    	this.chatTextArea = chatTextArea; 
     }
 	@Override
 	public String doInBackground(){
@@ -35,7 +36,7 @@ public class BackgroundSocketClient extends SwingWorker<String, String> {
     @Override
     protected void process(List<String> chunks) {
 
-			responseLabelText.setText(chunks.get(0));
+    	chatTextArea.append(chunks.get(0) + "\n");
 	}
 	
 	private void connectToServer() {
@@ -72,8 +73,7 @@ public class BackgroundSocketClient extends SwingWorker<String, String> {
 					out.println(userInput);
 					userInput = null;
 				}
-			}
-			//stopServer();		
+			}	
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
