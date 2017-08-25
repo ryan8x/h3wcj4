@@ -9,13 +9,17 @@ import java.util.Scanner;
 
 public class KKModel implements KKModellable {
 	private static Scanner input;
-	private List<KKJoke> kkJokeList = new ArrayList<KKJoke>(50);
+	private static List<KKJoke> kkJokeList = null;
 	private static String delimiter = "###";	
 	
 	public KKModel(){
-		openFile();
-		readFile();
-		closeFile();
+		
+		//Read data from file once only and share with other KKModel instances.  Note that kkJokeList is declared as static.
+		if (kkJokeList == null){
+			openFile();
+			readFile();
+			closeFile();
+		}
 	}
 	private void openFile() {
 		
@@ -28,6 +32,7 @@ public class KKModel implements KKModellable {
 	}
 
 	private void readFile() {
+		kkJokeList = new ArrayList<KKJoke>(50);
 		String clue;
 		String answer;
 		String line;
@@ -48,9 +53,11 @@ public class KKModel implements KKModellable {
 		} catch (NoSuchElementException e) {
 			System.err.println("File improperly formed");
 			//e.printStackTrace();
+			kkJokeList = null;
 		}
 		catch (IllegalStateException e) {
 			System.err.println("Error reading from file");
+			kkJokeList = null;
 		}
 	}
 
@@ -62,6 +69,13 @@ public class KKModel implements KKModellable {
 	@Override
 	public List<KKJoke> getData() {
 		
-		return kkJokeList;	
+		List<KKJoke> copyList = new ArrayList<KKJoke>(kkJokeList.size());
+		
+		for (KKJoke joke : kkJokeList){
+			copyList.add(joke);
+		}
+		
+		//return a new duplicated copy instead of the original reference static list.
+		return copyList;	
 	}
 }

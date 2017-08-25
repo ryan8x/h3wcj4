@@ -22,7 +22,8 @@ public class BackgroundSocketClient extends SwingWorker<String, String> {
 	private PrintWriter out = null;
 	private BufferedReader in = null;
     
-    public BackgroundSocketClient(String str, JLabel label){
+    public BackgroundSocketClient(Socket kkSocket, JLabel label){
+    	this.kkSocket = kkSocket;
     	this.responseLabelText = label; 
     }
 	@Override
@@ -40,7 +41,7 @@ public class BackgroundSocketClient extends SwingWorker<String, String> {
 	
 	private void connectToServer() {
 		try {
-			kkSocket = new Socket("localhost", 4444);
+			//kkSocket = new Socket("localhost", 4444);
 			out = new PrintWriter(kkSocket.getOutputStream(), true);
 			in = new BufferedReader(new InputStreamReader(kkSocket.getInputStream()));
 		} catch (UnknownHostException e) {

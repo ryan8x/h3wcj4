@@ -23,6 +23,9 @@ public class KnockKnockProtocol{
 	
 	private KKModellable model;
 	private List<KKJoke> kkJokeList;
+	
+	//private final String whoIsThere = "Who's there?";
+	private final String whoIsThere = "a";
 
 	public KnockKnockProtocol(){
 		model = new KKModel();
@@ -37,11 +40,11 @@ public class KnockKnockProtocol{
 			theOutput = "Knock! Knock!";
 			state = SENTKNOCKKNOCK;
 		} else if (state == SENTKNOCKKNOCK) {
-			if (theInput.equalsIgnoreCase("Who's there?")) {
+			if (theInput.equalsIgnoreCase(whoIsThere)) {
 				theOutput = kkJokeList.get(currentJoke).getClue();
 				state = SENTCLUE;
 			} else {
-				theOutput = "You're supposed to say \"Who's there?\"! " +
+				theOutput = "You're supposed to say \"" + whoIsThere + "\"! " +
 						"Try again. Knock! Knock!";
 			}
 		} else if (state == SENTCLUE) {
