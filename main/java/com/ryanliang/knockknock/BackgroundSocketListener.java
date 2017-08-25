@@ -3,6 +3,8 @@ package com.ryanliang.knockknock;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.SocketTimeoutException;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.SwingWorker;
 
@@ -10,11 +12,12 @@ public class BackgroundSocketListener extends SwingWorker<Boolean, Object> {
 	
     private ServerSocket serverSocket = null;
     private boolean listening = false;
+    private List<KKMultiServerThread> socketThreadList = new LinkedList<KKMultiServerThread>();
     
-    public BackgroundSocketListener(Boolean listening, ServerSocket serverSocket){
-    	//this.listening = listening;
-    	//this.serverSocket = serverSocket;
+    public BackgroundSocketListener(){
+    	
     }
+    
 	@Override
 	public Boolean doInBackground(){
 		startServer();
@@ -36,6 +39,10 @@ public class BackgroundSocketListener extends SwingWorker<Boolean, Object> {
 			if (serverSocket != null){
 				serverSocket.close();
 				serverSocket = null;
+				
+				for (KKMultiServerThread st : socketThreadList){
+					st.closeConnection();
+				}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -58,7 +65,9 @@ public class BackgroundSocketListener extends SwingWorker<Boolean, Object> {
 
         try {
 			while (listening){
-				new KKMultiServerThread(serverSocket.accept()).start();
+				KKMultiServerThread serverSocketThread = new KKMultiServerThread(serverSocket.accept());
+				socketThreadList.add(serverSocketThread);
+				serverSocketThread.start();
 			}
 		}
         catch (IOException e) {

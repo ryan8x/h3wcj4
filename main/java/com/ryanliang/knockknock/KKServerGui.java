@@ -117,7 +117,7 @@ public class KKServerGui extends JFrame {
 	private void startServer() {
 		
 		if (task == null){
-			task = new BackgroundSocketListener(null, null);
+			task = new BackgroundSocketListener();
 			task.execute();	
 		}
 	}

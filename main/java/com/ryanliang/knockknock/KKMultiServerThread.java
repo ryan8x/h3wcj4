@@ -10,6 +10,8 @@ import java.io.*;
 
 public class KKMultiServerThread extends Thread {
 	private Socket socket = null;
+	private PrintWriter out = null;
+	private BufferedReader in = null;
 
 	public KKMultiServerThread(Socket socket) {
 		super("KKMultiServerThread");
@@ -19,8 +21,8 @@ public class KKMultiServerThread extends Thread {
 	public void run() {
 
 		try {
-			PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-			BufferedReader in = new BufferedReader(
+			out = new PrintWriter(socket.getOutputStream(), true);
+			in = new BufferedReader(
 					new InputStreamReader(
 							socket.getInputStream()));
 
@@ -35,12 +37,31 @@ public class KKMultiServerThread extends Thread {
 				if (outputLine.equals("Bye"))  //possible bug here???  but maybe fixed now.
 					break;
 			}
-			out.close();
-			in.close();
-			socket.close();
+			//out.close();
+			//in.close();
+			//socket.close();
 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		finally{
+			closeConnection();
+		}
+	}
+
+	public void closeConnection() {
+
+		try {
+			if (socket != null){
+				out.close();
+				out = null;
+				in.close();
+				in = null;
+				socket.close();
+				socket = null;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}			
 	}
 }

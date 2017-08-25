@@ -55,14 +55,11 @@ public class KKClientGui extends JFrame {
 	private JTextArea userInputTextArea = new JTextArea();
 	private JButton sendButton = new JButton("Send");
 	
-	private Socket kkSocket = null;
 	private BackgroundSocketClient task = null;
 	
-	public KKClientGui(Socket kkSocket){
+	public KKClientGui(){
 		
 		super("Knock Knock Client");
-		
-		this.kkSocket = kkSocket;
 				
 		organizeUI();
 		addListeners();
@@ -147,7 +144,7 @@ public class KKClientGui extends JFrame {
 	private void startClient() {
 		
 		if (task == null){
-			task = new BackgroundSocketClient(kkSocket, serverResponseLabel);
+			task = new BackgroundSocketClient(serverResponseLabel);
 			task.execute();	
 		}
 	}
