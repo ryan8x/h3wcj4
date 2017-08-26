@@ -17,6 +17,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
@@ -36,16 +37,15 @@ public class KKServerGui extends JFrame {
 	
 	private final JMenuItem aboutHelpMenu = new JMenuItem("About");
 	
-	private final JButton newToolBarButton = new JButton("New"); 
+	private final JPanel northPanel = new JPanel();
+	private final JPanel centerPanel = new JPanel();
+	private final JPanel southPanel = new JPanel();
 	
-	private final JToolBar toolBar = new JToolBar();
-	private final JPanel statusPanel = new JPanel();
+	private String serverStarted = "Server status: Started";
+	private String serverStopped = "Server status: Stopped";
+	private JLabel serverStatusLabel = new JLabel("");
 	
-	private final JLabel searchResultLabel = new JLabel("Search result: ");
-	private JLabel searchResultStatus = new JLabel("");
-	
-    //private ServerSocket serverSocket = null;
-    //private boolean listening = false;
+	private JLabel totalClientConectionLabel = new JLabel("");
 	
 	private BackgroundSocketListener task = null;
     
@@ -74,14 +74,18 @@ public class KKServerGui extends JFrame {
 		menuBar.add(helpMenu);
 		setJMenuBar(menuBar);
 		
-		toolBar.add(newToolBarButton);
-
-		add(toolBar, BorderLayout.NORTH);
-				
-		statusPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
-		add(statusPanel, BorderLayout.SOUTH);
-		statusPanel.add(searchResultLabel);
-		statusPanel.add(searchResultStatus);
+		serverStatusLabel.setText(serverStopped);
+		northPanel.setLayout(new BorderLayout());
+		northPanel.add(serverStatusLabel, BorderLayout.WEST);
+		add(northPanel, BorderLayout.NORTH);
+		
+		centerPanel.setLayout(new BorderLayout());
+		add(centerPanel, BorderLayout.CENTER);
+		
+		southPanel.setLayout(new BorderLayout());
+		southPanel.add(totalClientConectionLabel, BorderLayout.WEST);
+		
+		add(southPanel, BorderLayout.SOUTH);
 	}
 	
 	private void addListeners() {
@@ -110,6 +114,8 @@ public class KKServerGui extends JFrame {
 		if (task != null){
 			task.stopServer();
 			task = null;
+			serverStatusLabel.setText(serverStopped);
+			totalClientConectionLabel.setText("Client connections: 0");
 		}
 
 	}
@@ -117,8 +123,10 @@ public class KKServerGui extends JFrame {
 	private void startServer() {
 		
 		if (task == null){
-			task = new BackgroundSocketListener();
+			task = new BackgroundSocketListener(totalClientConectionLabel);
 			task.execute();	
+			serverStatusLabel.setText(serverStarted);
+			totalClientConectionLabel.setText("Client connections: 0");
 		}
 	}
 

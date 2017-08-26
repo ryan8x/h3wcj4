@@ -6,14 +6,8 @@
 package com.ryanliang.knockknock;
 
 import java.awt.BorderLayout;
-import java.awt.GridLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.BufferedReader;
-import java.io.PrintWriter;
-import java.net.Socket;
-
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -23,9 +17,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.JToolBar;
+import javax.swing.JTextField;
 import javax.swing.WindowConstants;
-import javax.swing.border.BevelBorder;
 
 public class KKClientGui extends JFrame {
 
@@ -42,20 +35,16 @@ public class KKClientGui extends JFrame {
 	
 	private final JMenuItem aboutHelpMenu = new JMenuItem("About");
 	
-	private final JButton newToolBarButton = new JButton("New"); 
-	
-	private final JToolBar toolBar = new JToolBar();
-	private final JPanel westPanel = new JPanel();
+	private final JPanel northPanel = new JPanel();
 	private final JPanel centerPanel = new JPanel();
-	private final JPanel statusPanel = new JPanel();
+	private final JPanel southPanel = new JPanel();
 	
-	private final JLabel searchResultLabel = new JLabel("Search result: ");
-	private JLabel searchResultStatus = new JLabel("");
+	private String online = "Connection status: Online";
+	private String offline = "Connection status: Offline";
+	private JLabel connectionStatusLabel = new JLabel("");
 	
-	//private JLabel serverResponseLabel = new JLabel("");
 	private JTextArea chatTextArea = new JTextArea();
-	private JTextArea userInputTextArea = new JTextArea();
-	private JButton sendButton = new JButton("Send");
+	private JTextField userInputTextField = new JTextField();
 	
 	private BackgroundSocketClient task = null;
 	
@@ -84,24 +73,20 @@ public class KKClientGui extends JFrame {
 		menuBar.add(helpMenu);
 		setJMenuBar(menuBar);
 		
-		toolBar.add(newToolBarButton);
-
-		add(toolBar, BorderLayout.NORTH);
-		add(westPanel, BorderLayout.WEST);
+		connectionStatusLabel.setText(offline);
+		northPanel.setLayout(new BorderLayout());
+		northPanel.add(connectionStatusLabel, BorderLayout.WEST);
+		add(northPanel, BorderLayout.NORTH);
+		
+		centerPanel.setLayout(new BorderLayout());
 		add(centerPanel, BorderLayout.CENTER);
-		westPanel.add(new JLabel("      "));
-		
 		chatTextArea.setEditable(false);
-		
-		centerPanel.setLayout(new GridLayout(0,1));
 		centerPanel.add(new JScrollPane(chatTextArea));
-		centerPanel.add(userInputTextArea);
-		centerPanel.add(sendButton);
 		
-		statusPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
-		add(statusPanel, BorderLayout.SOUTH);
-		statusPanel.add(searchResultLabel);
-		statusPanel.add(searchResultStatus);
+		southPanel.setLayout(new BorderLayout());
+		southPanel.add(userInputTextField);
+		
+		add(southPanel, BorderLayout.SOUTH);
 	}
 	
 	private void addListeners() {
@@ -112,14 +97,9 @@ public class KKClientGui extends JFrame {
 		aboutHelpMenu.addActionListener(event -> {
 			JOptionPane.showMessageDialog(null, "Knock Knock Client v1.0 Copyright 2017 RLTech Inc");
 		});
-		
-		sendButton.addActionListener(event -> sendUserInput());
-		
-		
-		//newEditMenu.addActionListener(event -> newItem());
-		
-	
-		//newToolBarButton.addActionListener(event -> newItem());
+			
+		//Listen for ENTER key press.  This method detects ENTER key press by default.
+		userInputTextField.addActionListener(event -> sendUserInput());
 
 		addWindowListener(new WindowAdapter() {
 		    public void windowClosing(WindowEvent e) {
@@ -129,8 +109,8 @@ public class KKClientGui extends JFrame {
 	}
 
 	private void sendUserInput() {
-		String userInput = userInputTextArea.getText().trim();
-		userInputTextArea.setText("");
+		String userInput = userInputTextField.getText().trim();
+		userInputTextField.setText("");
 		
 		if (task != null && !userInput.equals("")){
 			chatTextArea.append(userInput + "\n");
@@ -143,6 +123,7 @@ public class KKClientGui extends JFrame {
 		if (task != null){
 			task.stopServer();
 			task = null;
+			connectionStatusLabel.setText(offline);
 		}
 	}
 
@@ -151,6 +132,7 @@ public class KKClientGui extends JFrame {
 		if (task == null){
 			task = new BackgroundSocketClient(chatTextArea);
 			task.execute();	
+			connectionStatusLabel.setText(online);
 		}
 	}
 

@@ -6,25 +6,34 @@ import java.net.SocketTimeoutException;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.swing.JLabel;
 import javax.swing.SwingWorker;
 
-public class BackgroundSocketListener extends SwingWorker<Boolean, Object> {
+public class BackgroundSocketListener extends SwingWorker<String, String> {
 	
     private ServerSocket serverSocket = null;
     private boolean listening = false;
     private List<KKMultiServerThread> socketThreadList = new LinkedList<KKMultiServerThread>();
-    
-    public BackgroundSocketListener(){
-    	
+	private JLabel totalClientConectionLabel;
+	private int totalClientConectionCounter = 0;
+	
+    public BackgroundSocketListener(JLabel totalClientConectionLabel){
+    	this.totalClientConectionLabel = totalClientConectionLabel;
     }
     
 	@Override
-	public Boolean doInBackground(){
+	public String doInBackground(){
 		startServer();
 		
-		return true;
+		return "none";
 	}
 
+    @Override
+    protected void process(List<String> chunks) {
+
+    	totalClientConectionLabel.setText("Client connections: " + chunks.get(0));
+	}
+    
 	public boolean isListening() {
 		return listening;
 	}
@@ -34,7 +43,7 @@ public class BackgroundSocketListener extends SwingWorker<Boolean, Object> {
 	}
 	
 	public void stopServer() {
-		System.out.println("stop");
+
 		try {
 			if (serverSocket != null){
 				serverSocket.close();
@@ -46,6 +55,7 @@ public class BackgroundSocketListener extends SwingWorker<Boolean, Object> {
 					}
 				}
 				socketThreadList.clear();
+				totalClientConectionCounter = 0;
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -71,6 +81,9 @@ public class BackgroundSocketListener extends SwingWorker<Boolean, Object> {
 				KKMultiServerThread serverSocketThread = new KKMultiServerThread(serverSocket.accept());
 				socketThreadList.add(serverSocketThread);
 				serverSocketThread.start();
+				
+				totalClientConectionCounter++;
+				publish(String.valueOf(totalClientConectionCounter));
 			}
 		}
         catch (IOException e) {

@@ -37,10 +37,6 @@ public class KKMultiServerThread extends Thread {
 				if (outputLine.equals("Bye"))  //possible bug here???  but maybe fixed now.
 					break;
 			}
-			//out.close();
-			//in.close();
-			//socket.close();
-
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

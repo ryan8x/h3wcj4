@@ -67,7 +67,7 @@ public class KKModel implements KKModellable {
 	}
 	
 	@Override
-	public List<KKJoke> getData() {
+	public List<KKJoke> getListOfKKJokes() {
 		
 		List<KKJoke> copyList = new ArrayList<KKJoke>(kkJokeList.size());
 		

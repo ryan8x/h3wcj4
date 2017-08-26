@@ -5,7 +5,7 @@ import java.util.List;
 public interface KKModellable {
 	//public void setView(Viewable view);
 
-	public List<KKJoke> getData();
+	public List<KKJoke> getListOfKKJokes();
 
 	
 }

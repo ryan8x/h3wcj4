@@ -29,7 +29,7 @@ public class KnockKnockProtocol{
 
 	public KnockKnockProtocol(){
 		model = new KKModel();
-		kkJokeList = model.getData();
+		kkJokeList = model.getListOfKKJokes();
 		Collections.shuffle(kkJokeList);
 		NUMJOKES = kkJokeList.size();
 	}
