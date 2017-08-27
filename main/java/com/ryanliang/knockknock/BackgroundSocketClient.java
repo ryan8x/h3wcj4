@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
@@ -19,12 +20,19 @@ public class BackgroundSocketClient extends SwingWorker<String, String> {
 	
 	private String userInput = null;
     private JTextArea chatTextArea;
+    
 	private Socket kkSocket = null;
+	
+	private String kkServerHost;
+	private int kkServerPort;
+	
 	private PrintWriter out = null;
 	private BufferedReader in = null;
     
-    public BackgroundSocketClient(JTextArea chatTextArea){
-    	this.chatTextArea = chatTextArea; 
+    public BackgroundSocketClient(String kkServerHost, int kkServerPort, JTextArea chatTextArea){
+    	this.kkServerHost = kkServerHost;
+    	this.kkServerPort = kkServerPort;
+    	this.chatTextArea = chatTextArea;
     }
 	@Override
 	public String doInBackground(){
@@ -41,7 +49,7 @@ public class BackgroundSocketClient extends SwingWorker<String, String> {
 	
 	private void connectToServer() {
 		try {
-			kkSocket = new Socket("localhost", 4444);
+			kkSocket = new Socket(InetAddress.getByName(kkServerHost), kkServerPort);
 			out = new PrintWriter(kkSocket.getOutputStream(), true);
 			in = new BufferedReader(new InputStreamReader(kkSocket.getInputStream()));
 		} catch (UnknownHostException e) {

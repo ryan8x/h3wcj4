@@ -15,6 +15,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -27,6 +28,7 @@ public class KKClientGui extends JFrame {
 	private final JMenu editMenu = new JMenu("Edit");
 	private final JMenu helpMenu = new JMenu("Help");
 	
+	private final JMenuItem getServerInfoFileMenu = new JMenuItem("Get Server Info");
 	private final JMenuItem startServerFileMenu = new JMenuItem("Start Server");
 	private final JMenuItem stopServerFileMenu = new JMenuItem("Stop Server");
 	private final JMenuItem exitFileMenu = new JMenuItem("Exit");
@@ -38,6 +40,11 @@ public class KKClientGui extends JFrame {
 	private final JPanel northPanel = new JPanel();
 	private final JPanel centerPanel = new JPanel();
 	private final JPanel southPanel = new JPanel();
+	
+	private String kkServerHost = "localhost";
+	private int kkServerPort = 5555;
+	private JTextField kkServerHostField = new JTextField(kkServerHost);
+	private JTextField kkServerPortField = new JTextField(String.valueOf(kkServerPort));
 	
 	private String online = "Connection status: Online";
 	private String offline = "Connection status: Offline";
@@ -59,6 +66,7 @@ public class KKClientGui extends JFrame {
 	}
 
 	private void organizeUI() {
+		fileMenu.add(getServerInfoFileMenu);
 		fileMenu.add(startServerFileMenu);
 		fileMenu.add(stopServerFileMenu);
 		fileMenu.addSeparator();
@@ -90,6 +98,7 @@ public class KKClientGui extends JFrame {
 	}
 	
 	private void addListeners() {
+		getServerInfoFileMenu.addActionListener(event -> getServerInfo());
 		startServerFileMenu.addActionListener(event -> startClient());
 		stopServerFileMenu.addActionListener(event -> stopClient());
 		exitFileMenu.addActionListener(event -> quitApp());
@@ -108,6 +117,25 @@ public class KKClientGui extends JFrame {
 		});
 	}
 
+	private void getServerInfo() {
+		   Object[] message = {
+			   "Server Host Name or IP Address:", kkServerHostField,
+		       "Server Port:", kkServerPortField,
+		   };
+
+		   int option = JOptionPane.showConfirmDialog(null, message, "Server config", JOptionPane.OK_CANCEL_OPTION);
+		   if (option == JOptionPane.OK_OPTION) {
+			   kkServerHost = kkServerHostField.getText().trim();
+			   
+			   String port = kkServerPortField.getText().trim();
+			   if(Utility.isNumeric(port)){
+				   kkServerPort = Integer.valueOf(port);
+			   }
+			   kkServerHostField.setText(kkServerHost);
+			   kkServerPortField.setText(String.valueOf(kkServerPort));
+		   }
+	}
+	
 	private void sendUserInput() {
 		String userInput = userInputTextField.getText().trim();
 		userInputTextField.setText("");
@@ -130,7 +158,7 @@ public class KKClientGui extends JFrame {
 	private void startClient() {
 		
 		if (task == null){
-			task = new BackgroundSocketClient(chatTextArea);
+			task = new BackgroundSocketClient(kkServerHost, kkServerPort, chatTextArea);
 			task.execute();	
 			connectionStatusLabel.setText(online);
 		}
