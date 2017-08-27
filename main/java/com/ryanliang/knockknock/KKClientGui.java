@@ -25,15 +25,12 @@ public class KKClientGui extends JFrame {
 
 	private final JMenuBar menuBar = new JMenuBar();
 	private final JMenu fileMenu = new JMenu("File");
-	private final JMenu editMenu = new JMenu("Edit");
 	private final JMenu helpMenu = new JMenu("Help");
 	
-	private final JMenuItem getServerInfoFileMenu = new JMenuItem("Get Server Info");
-	private final JMenuItem startServerFileMenu = new JMenuItem("Start Server");
-	private final JMenuItem stopServerFileMenu = new JMenuItem("Stop Server");
+	private final JMenuItem setupServerInfoFileMenu = new JMenuItem("Setup Server Info");
+	private final JMenuItem connectFileMenu = new JMenuItem("Connect To Server");
+	private final JMenuItem disconnectFileMenu = new JMenuItem("Disconnect");
 	private final JMenuItem exitFileMenu = new JMenuItem("Exit");
-	
-	private final JMenuItem newEditMenu = new JMenuItem("New");
 	
 	private final JMenuItem aboutHelpMenu = new JMenuItem("About");
 	
@@ -66,18 +63,15 @@ public class KKClientGui extends JFrame {
 	}
 
 	private void organizeUI() {
-		fileMenu.add(getServerInfoFileMenu);
-		fileMenu.add(startServerFileMenu);
-		fileMenu.add(stopServerFileMenu);
+		fileMenu.add(setupServerInfoFileMenu);
+		fileMenu.add(connectFileMenu);
+		fileMenu.add(disconnectFileMenu);
 		fileMenu.addSeparator();
 		fileMenu.add(exitFileMenu);
-		
-		editMenu.add(newEditMenu);
 		
 		helpMenu.add(aboutHelpMenu);
 		
 		menuBar.add(fileMenu);
-		menuBar.add(editMenu);
 		menuBar.add(helpMenu);
 		setJMenuBar(menuBar);
 		
@@ -98,9 +92,9 @@ public class KKClientGui extends JFrame {
 	}
 	
 	private void addListeners() {
-		getServerInfoFileMenu.addActionListener(event -> getServerInfo());
-		startServerFileMenu.addActionListener(event -> startClient());
-		stopServerFileMenu.addActionListener(event -> stopClient());
+		setupServerInfoFileMenu.addActionListener(event -> setupServerInfo());
+		connectFileMenu.addActionListener(event -> connect());
+		disconnectFileMenu.addActionListener(event -> disconnect());
 		exitFileMenu.addActionListener(event -> quitApp());
 	
 		aboutHelpMenu.addActionListener(event -> {
@@ -117,13 +111,13 @@ public class KKClientGui extends JFrame {
 		});
 	}
 
-	private void getServerInfo() {
+	private void setupServerInfo() {
 		   Object[] message = {
 			   "Server Host Name or IP Address:", kkServerHostField,
 		       "Server Port:", kkServerPortField,
 		   };
 
-		   int option = JOptionPane.showConfirmDialog(null, message, "Server config", JOptionPane.OK_CANCEL_OPTION);
+		   int option = JOptionPane.showConfirmDialog(null, message, "Setup Server", JOptionPane.OK_CANCEL_OPTION);
 		   if (option == JOptionPane.OK_OPTION) {
 			   kkServerHost = kkServerHostField.getText().trim();
 			   
@@ -146,7 +140,7 @@ public class KKClientGui extends JFrame {
 		}
 	}
 
-	private void stopClient() {
+	private void disconnect() {
 
 		if (task != null){
 			task.stopServer();
@@ -155,11 +149,20 @@ public class KKClientGui extends JFrame {
 		}
 	}
 
-	private void startClient() {
+	public void connect() {
 		
-		if (task == null){
-			task = new BackgroundSocketClient(kkServerHost, kkServerPort, chatTextArea);
-			task.execute();	
+		disconnect();
+		task = new BackgroundSocketClient(kkServerHost, kkServerPort, chatTextArea);
+		task.execute();	
+		
+		try {
+			//Delay is needed for proper return value from connectedToServer() method otherwise it will always return false.  See codes below.
+			Thread.sleep(200);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		if (task.connectedToServer()){
 			connectionStatusLabel.setText(online);
 		}
 	}
@@ -167,7 +170,7 @@ public class KKClientGui extends JFrame {
 	private void quitApp() {
     	int answer = JOptionPane.showConfirmDialog(null, "Exit App?");
     	if (answer == JOptionPane.YES_OPTION){
-    		stopClient(); 
+    		disconnect(); 
     		System.exit(0);
     	}
     }

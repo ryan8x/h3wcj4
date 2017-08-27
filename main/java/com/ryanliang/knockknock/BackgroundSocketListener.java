@@ -12,12 +12,14 @@ import javax.swing.SwingWorker;
 public class BackgroundSocketListener extends SwingWorker<String, String> {
 	
     private ServerSocket serverSocket = null;
+	private int kkServerPort;
     private boolean listening = false;
     private List<KKMultiServerThread> socketThreadList = new LinkedList<KKMultiServerThread>();
 	private JLabel totalClientConectionLabel;
 	private int totalClientConectionCounter = 0;
 	
-    public BackgroundSocketListener(JLabel totalClientConectionLabel){
+    public BackgroundSocketListener(int kkServerPort, JLabel totalClientConectionLabel){
+    	this.kkServerPort = kkServerPort;
     	this.totalClientConectionLabel = totalClientConectionLabel;
     }
     
@@ -70,9 +72,9 @@ public class BackgroundSocketListener extends SwingWorker<String, String> {
 		listening = true;
 		
         try {
-            serverSocket = new ServerSocket(5555);
+            serverSocket = new ServerSocket(kkServerPort);
         } catch (IOException e) {
-            System.err.println("Could not listen on port: 5555.");
+            System.err.println("Could not listen on port:  " + kkServerPort);
             e.printStackTrace();
         }
 

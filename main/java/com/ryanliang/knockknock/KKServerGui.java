@@ -18,6 +18,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
@@ -26,20 +27,21 @@ public class KKServerGui extends JFrame {
 	
 	private final JMenuBar menuBar = new JMenuBar();
 	private final JMenu fileMenu = new JMenu("File");
-	private final JMenu editMenu = new JMenu("Edit");
 	private final JMenu helpMenu = new JMenu("Help");
 	
+	private final JMenuItem setupServerInfoFileMenu = new JMenuItem("Setup Server Info");
 	private final JMenuItem startServerFileMenu = new JMenuItem("Start Server");
 	private final JMenuItem stopServerFileMenu = new JMenuItem("Stop Server");
 	private final JMenuItem exitFileMenu = new JMenuItem("Exit");
-	
-	private final JMenuItem newEditMenu = new JMenuItem("New");
 	
 	private final JMenuItem aboutHelpMenu = new JMenuItem("About");
 	
 	private final JPanel northPanel = new JPanel();
 	private final JPanel centerPanel = new JPanel();
 	private final JPanel southPanel = new JPanel();
+	
+	private int kkServerPort = 5555;
+	private JTextField kkServerPortField = new JTextField(String.valueOf(kkServerPort));
 	
 	private String serverStarted = "Server status: Started";
 	private String serverStopped = "Server status: Stopped";
@@ -60,17 +62,15 @@ public class KKServerGui extends JFrame {
 	}
 
 	private void organizeUI() {
+		fileMenu.add(setupServerInfoFileMenu);
 		fileMenu.add(startServerFileMenu);
 		fileMenu.add(stopServerFileMenu);
 		fileMenu.addSeparator();
 		fileMenu.add(exitFileMenu);
-		
-		editMenu.add(newEditMenu);
-		
+
 		helpMenu.add(aboutHelpMenu);
 		
 		menuBar.add(fileMenu);
-		menuBar.add(editMenu);
 		menuBar.add(helpMenu);
 		setJMenuBar(menuBar);
 		
@@ -89,6 +89,7 @@ public class KKServerGui extends JFrame {
 	}
 	
 	private void addListeners() {
+		setupServerInfoFileMenu.addActionListener(event -> setupServerInfo());
 		startServerFileMenu.addActionListener(event -> startServer());
 		stopServerFileMenu.addActionListener(event -> stopServer());
 		exitFileMenu.addActionListener(event -> quitApp());
@@ -109,6 +110,21 @@ public class KKServerGui extends JFrame {
 		});
 	}
 
+	private void setupServerInfo() {
+		   Object[] message = {
+		       "Server Port:", kkServerPortField,
+		   };
+
+		   int option = JOptionPane.showConfirmDialog(null, message, "Setup Server", JOptionPane.OK_CANCEL_OPTION);
+		   if (option == JOptionPane.OK_OPTION) {		   
+			   String port = kkServerPortField.getText().trim();
+			   if(Utility.isNumeric(port)){
+				   kkServerPort = Integer.valueOf(port);
+			   }
+			   kkServerPortField.setText(String.valueOf(kkServerPort));
+		   }
+	}
+	
 	private void stopServer() {
 		
 		if (task != null){
@@ -123,7 +139,7 @@ public class KKServerGui extends JFrame {
 	private void startServer() {
 		
 		if (task == null){
-			task = new BackgroundSocketListener(totalClientConectionLabel);
+			task = new BackgroundSocketListener(kkServerPort, totalClientConectionLabel);
 			task.execute();	
 			serverStatusLabel.setText(serverStarted);
 			totalClientConectionLabel.setText("Client connections: 0");

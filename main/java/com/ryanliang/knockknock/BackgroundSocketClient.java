@@ -26,6 +26,10 @@ public class BackgroundSocketClient extends SwingWorker<String, String> {
 	private String kkServerHost;
 	private int kkServerPort;
 	
+	private boolean connectedToServer = false;
+	
+	String exceptionErrorMessage = "";
+	
 	private PrintWriter out = null;
 	private BufferedReader in = null;
     
@@ -41,6 +45,11 @@ public class BackgroundSocketClient extends SwingWorker<String, String> {
 		return "none";
 	}
 	
+	@Override
+	protected void done(){
+		chatTextArea.append(exceptionErrorMessage + "\n");
+	}
+	
     @Override
     protected void process(List<String> chunks) {
 
@@ -52,21 +61,17 @@ public class BackgroundSocketClient extends SwingWorker<String, String> {
 			kkSocket = new Socket(InetAddress.getByName(kkServerHost), kkServerPort);
 			out = new PrintWriter(kkSocket.getOutputStream(), true);
 			in = new BufferedReader(new InputStreamReader(kkSocket.getInputStream()));
-		} catch (UnknownHostException e) {
-			System.err.println("Don't know about host: localhost");
-		} catch (IOException e) {
-			System.err.println("Couldn't get I/O for the connection to: localhost");
-		}
-		
-		//BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
-		String fromServer;
-		try {
+			connectedToServer = true;
+
+			//BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
+			String fromServer;
+
 			while ((fromServer = in.readLine()) != null) {
 				publish(fromServer);
 				if (fromServer.equals("Bye")){
 					break;
 				}
-				
+
 				//wait for user input
 				while (userInput == null)
 				{
@@ -76,17 +81,22 @@ public class BackgroundSocketClient extends SwingWorker<String, String> {
 						e.printStackTrace();
 					}
 				}
-				
+
 				if (userInput != null) {
 					out.println(userInput);
 					userInput = null;
 				}
-			}	
+			}
+		} catch (UnknownHostException e) {
+			System.err.println("Don't know about host: " + kkServerHost);
+			exceptionErrorMessage = "Don't know about host: " + kkServerHost;
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.err.println("Couldn't get I/O for the connection to: " + kkServerHost);
+			exceptionErrorMessage = "Couldn't get I/O for the connection to: " + kkServerHost;
 		}
 		finally{
-			stopServer();	
+			stopServer();
+			connectedToServer = false;
 		}
 	}
 	
@@ -109,6 +119,10 @@ public class BackgroundSocketClient extends SwingWorker<String, String> {
 	}
 	public void processUserInput(String userInput) {
 		this.userInput = userInput;
+	}
+	
+	public boolean connectedToServer(){
+		return connectedToServer;
 	}
 
 }

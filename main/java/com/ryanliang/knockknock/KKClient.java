@@ -26,6 +26,7 @@ public class KKClient {
 
 			kkClient.setLocationRelativeTo(null);
 			kkClient.setVisible(true);
+			kkClient.connect();
 			
 	});
 		
