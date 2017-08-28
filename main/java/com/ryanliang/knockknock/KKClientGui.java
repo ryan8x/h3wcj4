@@ -8,6 +8,8 @@ package com.ryanliang.knockknock;
 import java.awt.BorderLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -19,6 +21,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
 
 public class KKClientGui extends JFrame {
@@ -33,6 +36,10 @@ public class KKClientGui extends JFrame {
 	private final JMenuItem exitFileMenu = new JMenuItem("Exit");
 	
 	private final JMenuItem aboutHelpMenu = new JMenuItem("About");
+	
+	private final JToolBar toolBar = new JToolBar();
+	private final JButton disconnectToolBarButton = new JButton("Disconnect"); 
+	private final JButton connectToolBarButton = new JButton("Connect"); 
 	
 	private final JPanel northPanel = new JPanel();
 	private final JPanel centerPanel = new JPanel();
@@ -75,8 +82,12 @@ public class KKClientGui extends JFrame {
 		menuBar.add(helpMenu);
 		setJMenuBar(menuBar);
 		
+		toolBar.add(connectToolBarButton);
+		toolBar.add(disconnectToolBarButton);
+		
 		connectionStatusLabel.setText(offline);
 		northPanel.setLayout(new BorderLayout());
+		northPanel.add(toolBar, BorderLayout.NORTH);
 		northPanel.add(connectionStatusLabel, BorderLayout.WEST);
 		add(northPanel, BorderLayout.NORTH);
 		
@@ -92,15 +103,19 @@ public class KKClientGui extends JFrame {
 	}
 	
 	private void addListeners() {
-		setupServerInfoFileMenu.addActionListener(event -> setupServerInfo());
+		setupServerInfoFileMenu.addActionListener(event -> setupServerInfo());		
 		connectFileMenu.addActionListener(event -> connect());
 		disconnectFileMenu.addActionListener(event -> disconnect());
+		
 		exitFileMenu.addActionListener(event -> quitApp());
 	
 		aboutHelpMenu.addActionListener(event -> {
 			JOptionPane.showMessageDialog(null, "Knock Knock Client v1.0 Copyright 2017 RLTech Inc");
 		});
 			
+		connectToolBarButton.addActionListener(event -> connect());
+		disconnectToolBarButton.addActionListener(event -> disconnect());
+		
 		//Listen for ENTER key press.  This method detects ENTER key press by default.
 		userInputTextField.addActionListener(event -> sendUserInput());
 
@@ -146,25 +161,20 @@ public class KKClientGui extends JFrame {
 			task.stopServer();
 			task = null;
 			connectionStatusLabel.setText(offline);
+			disconnectToolBarButton.setEnabled(false);
+			connectToolBarButton.setEnabled(true);
 		}
 	}
 
 	public void connect() {
 		
 		disconnect();
-		task = new BackgroundSocketClient(kkServerHost, kkServerPort, chatTextArea);
+		task = new BackgroundSocketClient(kkServerHost, kkServerPort, connectionStatusLabel, chatTextArea);
 		task.execute();	
 		
-		try {
-			//Delay is needed for proper return value from connectedToServer() method otherwise it will always return false.  See codes below.
-			Thread.sleep(200);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		
-		if (task.connectedToServer()){
-			connectionStatusLabel.setText(online);
-		}
+		connectionStatusLabel.setText(online);
+		connectToolBarButton.setEnabled(false);
+		disconnectToolBarButton.setEnabled(true);
 	}
 
 	private void quitApp() {

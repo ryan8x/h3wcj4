@@ -36,6 +36,10 @@ public class KKServerGui extends JFrame {
 	
 	private final JMenuItem aboutHelpMenu = new JMenuItem("About");
 	
+	private final JToolBar toolBar = new JToolBar();
+	private final JButton startServerToolBarButton = new JButton("Start Server"); 
+	private final JButton stopServerToolBarButton = new JButton("Stop Server"); 
+	
 	private final JPanel northPanel = new JPanel();
 	private final JPanel centerPanel = new JPanel();
 	private final JPanel southPanel = new JPanel();
@@ -74,8 +78,13 @@ public class KKServerGui extends JFrame {
 		menuBar.add(helpMenu);
 		setJMenuBar(menuBar);
 		
+		toolBar.add(startServerToolBarButton);
+		toolBar.add(stopServerToolBarButton);
+		stopServerToolBarButton.setEnabled(false);
+		
 		serverStatusLabel.setText(serverStopped);
 		northPanel.setLayout(new BorderLayout());
+		northPanel.add(toolBar, BorderLayout.NORTH);
 		northPanel.add(serverStatusLabel, BorderLayout.WEST);
 		add(northPanel, BorderLayout.NORTH);
 		
@@ -92,16 +101,24 @@ public class KKServerGui extends JFrame {
 		setupServerInfoFileMenu.addActionListener(event -> setupServerInfo());
 		startServerFileMenu.addActionListener(event -> startServer());
 		stopServerFileMenu.addActionListener(event -> stopServer());
+		
 		exitFileMenu.addActionListener(event -> quitApp());
 	
 		aboutHelpMenu.addActionListener(event -> {
 			JOptionPane.showMessageDialog(null, "Knock Knock Server v1.0 Copyright 2017 RLTech Inc");
 		});
 		
-		//newEditMenu.addActionListener(event -> newItem());
+		startServerToolBarButton.addActionListener(event -> {
+			startServer();
+			startServerToolBarButton.setEnabled(false);
+			stopServerToolBarButton.setEnabled(true);
+		});
 		
-	
-		//newToolBarButton.addActionListener(event -> newItem());
+		stopServerToolBarButton.addActionListener(event -> {
+			stopServer();
+			startServerToolBarButton.setEnabled(true);
+			stopServerToolBarButton.setEnabled(false);
+		});
 
 		addWindowListener(new WindowAdapter() {
 		    public void windowClosing(WindowEvent e) {
@@ -132,6 +149,9 @@ public class KKServerGui extends JFrame {
 			task = null;
 			serverStatusLabel.setText(serverStopped);
 			totalClientConectionLabel.setText("Client connections: 0");
+			
+			startServerToolBarButton.setEnabled(true);
+			stopServerToolBarButton.setEnabled(false);
 		}
 
 	}
@@ -143,6 +163,9 @@ public class KKServerGui extends JFrame {
 			task.execute();	
 			serverStatusLabel.setText(serverStarted);
 			totalClientConectionLabel.setText("Client connections: 0");
+			
+			startServerToolBarButton.setEnabled(false);
+			stopServerToolBarButton.setEnabled(true);
 		}
 	}
 

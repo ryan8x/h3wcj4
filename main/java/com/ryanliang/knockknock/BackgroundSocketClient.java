@@ -20,22 +20,22 @@ public class BackgroundSocketClient extends SwingWorker<String, String> {
 	
 	private String userInput = null;
     private JTextArea chatTextArea;
+    private JLabel connectionStatusLabel;
     
 	private Socket kkSocket = null;
 	
 	private String kkServerHost;
 	private int kkServerPort;
 	
-	private boolean connectedToServer = false;
-	
-	String exceptionErrorMessage = "";
+	private String exceptionErrorMessage = "";
 	
 	private PrintWriter out = null;
 	private BufferedReader in = null;
     
-    public BackgroundSocketClient(String kkServerHost, int kkServerPort, JTextArea chatTextArea){
+    public BackgroundSocketClient(String kkServerHost, int kkServerPort, JLabel connectionStatusLabel, JTextArea chatTextArea){
     	this.kkServerHost = kkServerHost;
     	this.kkServerPort = kkServerPort;
+    	this.connectionStatusLabel = connectionStatusLabel;
     	this.chatTextArea = chatTextArea;
     }
 	@Override
@@ -47,7 +47,10 @@ public class BackgroundSocketClient extends SwingWorker<String, String> {
 	
 	@Override
 	protected void done(){
-		chatTextArea.append(exceptionErrorMessage + "\n");
+		if (exceptionErrorMessage.length() > 1){
+			connectionStatusLabel.setText("Connection status: Fail");
+			chatTextArea.append(exceptionErrorMessage + "\n");
+		}
 	}
 	
     @Override
@@ -61,7 +64,6 @@ public class BackgroundSocketClient extends SwingWorker<String, String> {
 			kkSocket = new Socket(InetAddress.getByName(kkServerHost), kkServerPort);
 			out = new PrintWriter(kkSocket.getOutputStream(), true);
 			in = new BufferedReader(new InputStreamReader(kkSocket.getInputStream()));
-			connectedToServer = true;
 
 			//BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
 			String fromServer;
@@ -96,7 +98,6 @@ public class BackgroundSocketClient extends SwingWorker<String, String> {
 		}
 		finally{
 			stopServer();
-			connectedToServer = false;
 		}
 	}
 	
@@ -120,9 +121,4 @@ public class BackgroundSocketClient extends SwingWorker<String, String> {
 	public void processUserInput(String userInput) {
 		this.userInput = userInput;
 	}
-	
-	public boolean connectedToServer(){
-		return connectedToServer;
-	}
-
 }
