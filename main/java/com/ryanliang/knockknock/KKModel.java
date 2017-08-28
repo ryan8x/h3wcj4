@@ -7,11 +7,20 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
+/**
+ * KKModel implements KKModellable interface to get data from a source (such a file or database) or save data to a source. 
+ * @author Ryan L.
+ * @version $Revision$
+ * @since 1.7
+ */
 public class KKModel implements KKModellable {
 	private static Scanner input;
 	private static List<KKJoke> kkJokeList = null;
 	private static String delimiter = "###";	
 	
+	/**
+	 * This is the only constructor defined for this class.
+	 */
 	public KKModel(){
 		
 		//Read data from file once only and share with other KKModel instances.  Note that kkJokeList is declared as static.
@@ -21,6 +30,10 @@ public class KKModel implements KKModellable {
 			closeFile();
 		}
 	}
+	
+	/**
+	 * This method is for opening a file. 
+	 */
 	private void openFile() {
 		
 		try {
@@ -31,6 +44,9 @@ public class KKModel implements KKModellable {
 		}
 	}
 
+	/**
+	 * This method is for obtaining data from a file. 
+	 */
 	private void readFile() {
 		kkJokeList = new ArrayList<KKJoke>(50);
 		String clue;
@@ -61,11 +77,17 @@ public class KKModel implements KKModellable {
 		}
 	}
 
+	/**
+	 * This method is for freeing up resources. 
+	 */
 	private void closeFile() {
 		if (input != null)
 			input.close();
 	}
 	
+	/**
+	 * This method returns a duplicated copy of knock knock list of jokes.
+	 */
 	@Override
 	public List<KKJoke> getListOfKKJokes() {
 		

@@ -1,23 +1,31 @@
-/**
- *
- * @author Ryan L.
- */
-
 package com.ryanliang.knockknock;
 
 import java.net.*;
 import java.io.*;
 
+/**
+ * KKMultiServerThread is a Thread subclass utilized by the knock knock server app for processing multiple knock knock client simultaneously.
+ * @author Ryan L.
+ * @version $Revision$
+ * @since 1.7
+ */
 public class KKMultiServerThread extends Thread {
 	private Socket socket = null;
 	private PrintWriter out = null;
 	private BufferedReader in = null;
 
+	/**
+	 * This is the only constructor defined for this class.
+	 * @param socket Is a socket connection with a client
+	 */
 	public KKMultiServerThread(Socket socket) {
 		super("KKMultiServerThread");
 		this.socket = socket;
 	}
 
+	/**
+	 * This method runs on a unique thread and is for processing network communication with the knock knock client.
+	 */
 	public void run() {
 
 		try {
@@ -45,6 +53,9 @@ public class KKMultiServerThread extends Thread {
 		}
 	}
 
+	/**
+	 * This method is for freeing up resources. 
+	 */
 	public void closeConnection() {
 
 		try {

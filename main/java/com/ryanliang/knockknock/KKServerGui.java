@@ -1,8 +1,3 @@
-/**
- *
- * @author Ryan L.
- */
-
 package com.ryanliang.knockknock;
 
 import java.awt.BorderLayout;
@@ -23,6 +18,12 @@ import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 
+/**
+ * KKServerGui is a JFrame subclass defining the knock knock server app GUI.
+ * @author Ryan L.
+ * @version $Revision$
+ * @since 1.7
+ */
 public class KKServerGui extends JFrame {
 	
 	private final JMenuBar menuBar = new JMenuBar();
@@ -55,6 +56,9 @@ public class KKServerGui extends JFrame {
 	
 	private BackgroundSocketListener task = null;
     
+	/**
+	 * This is the only constructor defined for this class.
+	 */
 	public KKServerGui(){
 		
 		super("Knock Knock Server");
@@ -65,6 +69,9 @@ public class KKServerGui extends JFrame {
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 	}
 
+	/**
+	 * This method arranges the layout of the GUI components. 
+	 */
 	private void organizeUI() {
 		fileMenu.add(setupServerInfoFileMenu);
 		fileMenu.add(startServerFileMenu);
@@ -97,6 +104,9 @@ public class KKServerGui extends JFrame {
 		add(southPanel, BorderLayout.SOUTH);
 	}
 	
+	/**
+	 * This method configures listeners of the GUI components. 
+	 */
 	private void addListeners() {
 		setupServerInfoFileMenu.addActionListener(event -> setupServerInfo());
 		startServerFileMenu.addActionListener(event -> startServer());
@@ -127,6 +137,9 @@ public class KKServerGui extends JFrame {
 		});
 	}
 
+	/**
+	 * This method enables user to specify the server's port number.
+	 */
 	private void setupServerInfo() {
 		   Object[] message = {
 		       "Server Port:", kkServerPortField,
@@ -142,6 +155,9 @@ public class KKServerGui extends JFrame {
 		   }
 	}
 	
+	/**
+	 * This method stops the server.
+	 */
 	private void stopServer() {
 		
 		if (task != null){
@@ -156,6 +172,9 @@ public class KKServerGui extends JFrame {
 
 	}
 
+	/**
+	 * This method starts the server.
+	 */
 	private void startServer() {
 		
 		if (task == null){
@@ -169,6 +188,9 @@ public class KKServerGui extends JFrame {
 		}
 	}
 
+	/**
+	 * This method terminates the server app.
+	 */
 	private void quitApp() {
     	int answer = JOptionPane.showConfirmDialog(null, "Exit App?");
     	if (answer == JOptionPane.YES_OPTION){

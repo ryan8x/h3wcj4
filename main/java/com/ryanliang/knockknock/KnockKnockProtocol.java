@@ -1,8 +1,3 @@
-/**
- *
- * @author Ryan L.
- */
-
 package com.ryanliang.knockknock;
 
 import java.net.*;
@@ -10,6 +5,12 @@ import java.util.Collections;
 import java.util.List;
 import java.io.*;
 
+/**
+ * KnockKnockProtocol class defines the customized network communication protocols between the server and the client. 
+ * @author Ryan L.
+ * @version $Revision$
+ * @since 1.7
+ */
 public class KnockKnockProtocol{
 	private static final int WAITING = 0;
 	private static final int SENTKNOCKKNOCK = 1;
@@ -27,12 +28,19 @@ public class KnockKnockProtocol{
 	//private final String whoIsThere = "Who's there?";
 	private final String whoIsThere = "a";
 
+	/**
+	 * This is the only constructor defined for this class.
+	 */
 	public KnockKnockProtocol(){
 		model = new KKModel();
 		kkJokeList = model.getListOfKKJokes();
 		Collections.shuffle(kkJokeList);
 		NUMJOKES = kkJokeList.size();
 	}
+	
+	/**
+	 * This method process the customized network communication protocols between the server and the client.
+	 */
 	public String processInput(String theInput) {
 		String theOutput = null;
 

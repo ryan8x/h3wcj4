@@ -1,8 +1,3 @@
-/**
- *
- * @author Ryan L.
- */
-
 package com.ryanliang.knockknock;
 
 import java.awt.BorderLayout;
@@ -24,6 +19,12 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
 
+/**
+ * KKClientGui is a JFrame subclass defining the knock knock client app GUI.
+ * @author Ryan L.
+ * @version $Revision$
+ * @since 1.7
+ */
 public class KKClientGui extends JFrame {
 
 	private final JMenuBar menuBar = new JMenuBar();
@@ -59,6 +60,9 @@ public class KKClientGui extends JFrame {
 	
 	private BackgroundSocketClient task = null;
 	
+	/**
+	 * This is the only constructor defined for this class.
+	 */
 	public KKClientGui(){
 		
 		super("Knock Knock Client");
@@ -69,6 +73,9 @@ public class KKClientGui extends JFrame {
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 	}
 
+	/**
+	 * This method arranges the layout of the GUI components. 
+	 */
 	private void organizeUI() {
 		fileMenu.add(setupServerInfoFileMenu);
 		fileMenu.add(connectFileMenu);
@@ -102,6 +109,9 @@ public class KKClientGui extends JFrame {
 		add(southPanel, BorderLayout.SOUTH);
 	}
 	
+	/**
+	 * This method configures listeners of the GUI components. 
+	 */
 	private void addListeners() {
 		setupServerInfoFileMenu.addActionListener(event -> setupServerInfo());		
 		connectFileMenu.addActionListener(event -> connect());
@@ -126,6 +136,9 @@ public class KKClientGui extends JFrame {
 		});
 	}
 
+	/**
+	 * This method enables user to specify the server's host name/ip address and port number.
+	 */
 	private void setupServerInfo() {
 		   Object[] message = {
 			   "Server Host Name or IP Address:", kkServerHostField,
@@ -145,6 +158,9 @@ public class KKClientGui extends JFrame {
 		   }
 	}
 	
+	/**
+	 * This method handles the user chat input.
+	 */
 	private void sendUserInput() {
 		String userInput = userInputTextField.getText().trim();
 		userInputTextField.setText("");
@@ -155,6 +171,9 @@ public class KKClientGui extends JFrame {
 		}
 	}
 
+	/**
+	 * This method ends the network connection.
+	 */
 	private void disconnect() {
 
 		if (task != null){
@@ -166,6 +185,9 @@ public class KKClientGui extends JFrame {
 		}
 	}
 
+	/**
+	 * This method starts the network connection.
+	 */
 	public void connect() {
 		
 		disconnect();
@@ -177,6 +199,9 @@ public class KKClientGui extends JFrame {
 		disconnectToolBarButton.setEnabled(true);
 	}
 
+	/**
+	 * This method terminates the client app.
+	 */
 	private void quitApp() {
     	int answer = JOptionPane.showConfirmDialog(null, "Exit App?");
     	if (answer == JOptionPane.YES_OPTION){

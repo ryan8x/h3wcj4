@@ -16,6 +16,12 @@ import javax.swing.JLabel;
 import javax.swing.JTextArea;
 import javax.swing.SwingWorker;
 
+/**
+ * BackgroundSocketClient is a SwingWorker subclass utilized by the knock knock client app for processing socket network communication with the knock knock server. 
+ * @author Ryan L.
+ * @version $Revision$
+ * @since 1.7
+ */
 public class BackgroundSocketClient extends SwingWorker<String, String> {
 	
 	private String userInput = null;
@@ -32,12 +38,24 @@ public class BackgroundSocketClient extends SwingWorker<String, String> {
 	private PrintWriter out = null;
 	private BufferedReader in = null;
     
+	/**
+	 * This is the only constructor defined for this class.
+	 * @param kkServerHost Specifies server host name or ip address
+	 * @param kkServerPort Specifies server port number
+	 * @param connectionStatusLabel A reference JLabel for updating connection status
+	 * @param chatTextArea A reference JTextArea for updating chat text.
+	 */
     public BackgroundSocketClient(String kkServerHost, int kkServerPort, JLabel connectionStatusLabel, JTextArea chatTextArea){
     	this.kkServerHost = kkServerHost;
     	this.kkServerPort = kkServerPort;
     	this.connectionStatusLabel = connectionStatusLabel;
     	this.chatTextArea = chatTextArea;
     }
+    
+	/**
+	 * This method performs a task in the background in a SwingWorker thread.
+	 * @return  
+	 */
 	@Override
 	public String doInBackground(){
 		connectToServer();
@@ -45,6 +63,9 @@ public class BackgroundSocketClient extends SwingWorker<String, String> {
 		return "none";
 	}
 	
+	/**
+	 * This method updates specific Swing components (UI) when doInBackground() is completed. 
+	 */
 	@Override
 	protected void done(){
 		if (exceptionErrorMessage.length() > 1){
@@ -53,12 +74,18 @@ public class BackgroundSocketClient extends SwingWorker<String, String> {
 		}
 	}
 	
+	/**
+	 * This method updates specific Swing components (UI) while doInBackground() is in progress. 
+	 */
     @Override
     protected void process(List<String> chunks) {
 
     	chatTextArea.append(chunks.get(0) + "\n");
 	}
 	
+	/**
+	 * This method is for establishing connection to the server. 
+	 */
 	private void connectToServer() {
 		try {
 			kkSocket = new Socket(InetAddress.getByName(kkServerHost), kkServerPort);
@@ -101,6 +128,9 @@ public class BackgroundSocketClient extends SwingWorker<String, String> {
 		}
 	}
 	
+	/**
+	 * This method is for freeing up resources. 
+	 */
 	public void stopServer() {
 		
 		try {
@@ -118,6 +148,10 @@ public class BackgroundSocketClient extends SwingWorker<String, String> {
 		}
 
 	}
+	
+	/**
+	 * This method is for accepting user text input.
+	 */
 	public void processUserInput(String userInput) {
 		this.userInput = userInput;
 	}

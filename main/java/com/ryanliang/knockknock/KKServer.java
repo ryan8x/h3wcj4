@@ -1,15 +1,15 @@
-/**
- *
- * @author Ryan L.
- */
-
-
 package com.ryanliang.knockknock;
 
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Toolkit;
 
+/**
+ * The knock knock app displays a new server GUI window.
+ * @author Ryan L.
+ * @version $Revision$
+ * @since 1.7
+ */
 public class KKServer {
 
 	public static void main(String[] args) {
