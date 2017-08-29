@@ -149,13 +149,14 @@ public class KKClientGui extends JFrame {
 		   if (option == JOptionPane.OK_OPTION) {
 			   kkServerHost = kkServerHostField.getText().trim();
 			   
-			   String port = kkServerPortField.getText().trim();
-			   if(Utility.isNumeric(port)){
-				   kkServerPort = Integer.valueOf(port);
+			   String portStr = kkServerPortField.getText().trim();
+			   if(Utility.isNumeric(portStr)){
+				   int port = Integer.valueOf(portStr);
+				   kkServerPort = (port > 0 && port < 65536?port:kkServerPort);
 			   }
-			   kkServerHostField.setText(kkServerHost);
-			   kkServerPortField.setText(String.valueOf(kkServerPort));
 		   }
+		   kkServerHostField.setText(kkServerHost);
+		   kkServerPortField.setText(String.valueOf(kkServerPort));
 	}
 	
 	/**

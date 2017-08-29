@@ -147,12 +147,13 @@ public class KKServerGui extends JFrame {
 
 		   int option = JOptionPane.showConfirmDialog(null, message, "Setup Server", JOptionPane.OK_CANCEL_OPTION);
 		   if (option == JOptionPane.OK_OPTION) {		   
-			   String port = kkServerPortField.getText().trim();
-			   if(Utility.isNumeric(port)){
-				   kkServerPort = Integer.valueOf(port);
+			   String portStr = kkServerPortField.getText().trim();
+			   if(Utility.isNumeric(portStr)){
+				   int port = Integer.valueOf(portStr);
+				   kkServerPort = (port > 0 && port < 65536?port:kkServerPort);
 			   }
-			   kkServerPortField.setText(String.valueOf(kkServerPort));
 		   }
+		   kkServerPortField.setText(String.valueOf(kkServerPort));
 	}
 	
 	/**
@@ -178,7 +179,7 @@ public class KKServerGui extends JFrame {
 	private void startServer() {
 		
 		if (task == null){
-			task = new BackgroundSocketListener(kkServerPort, totalClientConectionLabel);
+			task = new BackgroundSocketListener(kkServerPort, serverStatusLabel, totalClientConectionLabel);
 			task.execute();	
 			serverStatusLabel.setText(serverStarted);
 			totalClientConectionLabel.setText("Client connections: 0");

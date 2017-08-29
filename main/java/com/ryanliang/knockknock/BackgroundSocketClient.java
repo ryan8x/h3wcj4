@@ -22,7 +22,7 @@ import javax.swing.SwingWorker;
  * @version $Revision$
  * @since 1.7
  */
-public class BackgroundSocketClient extends SwingWorker<String, String> {
+public class BackgroundSocketClient extends SwingWorker<Void, String> {
 	
 	private String userInput = null;
     private JTextArea chatTextArea;
@@ -57,10 +57,10 @@ public class BackgroundSocketClient extends SwingWorker<String, String> {
 	 * @return  
 	 */
 	@Override
-	public String doInBackground(){
+	public Void doInBackground(){
 		connectToServer();
 		
-		return "none";
+		return null;
 	}
 	
 	/**
@@ -96,7 +96,9 @@ public class BackgroundSocketClient extends SwingWorker<String, String> {
 			String fromServer;
 
 			while ((fromServer = in.readLine()) != null) {
+				
 				publish(fromServer);
+				
 				if (fromServer.equals("Bye")){
 					break;
 				}
@@ -117,11 +119,11 @@ public class BackgroundSocketClient extends SwingWorker<String, String> {
 				}
 			}
 		} catch (UnknownHostException e) {
-			System.err.println("Don't know about host: " + kkServerHost);
-			exceptionErrorMessage = "Don't know about host: " + kkServerHost;
+			exceptionErrorMessage = "Don't know about host " + kkServerHost;
+			System.err.println(exceptionErrorMessage);
 		} catch (IOException e) {
-			System.err.println("Couldn't get I/O for the connection to: " + kkServerHost);
-			exceptionErrorMessage = "Couldn't get I/O for the connection to: " + kkServerHost;
+			exceptionErrorMessage = "Couldn't get I/O for the connection to " + kkServerHost + ":" + kkServerPort;
+			System.err.println(exceptionErrorMessage);
 		}
 		finally{
 			stopServer();

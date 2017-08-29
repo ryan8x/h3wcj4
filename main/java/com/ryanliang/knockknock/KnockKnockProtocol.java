@@ -12,14 +12,14 @@ import java.io.*;
  * @since 1.7
  */
 public class KnockKnockProtocol{
-	private static final int WAITING = 0;
+	/*private static final int WAITING = 0;
 	private static final int SENTKNOCKKNOCK = 1;
 	private static final int SENTCLUE = 2;
 	private static final int ANOTHER = 3;
-
+*/
 	private final int NUMJOKES;
 
-	private int state = WAITING;
+	private KKProtocolState state = KKProtocolState.WAITING;
 	private int currentJoke = 0;
 	
 	private KKModellable model;
@@ -44,39 +44,39 @@ public class KnockKnockProtocol{
 	public String processInput(String theInput) {
 		String theOutput = null;
 
-		if (state == WAITING) {
+		if (state == KKProtocolState.WAITING) {
 			theOutput = "Knock! Knock!";
-			state = SENTKNOCKKNOCK;
-		} else if (state == SENTKNOCKKNOCK) {
+			state = KKProtocolState.SENTKNOCKKNOCK;
+		} else if (state == KKProtocolState.SENTKNOCKKNOCK) {
 			if (theInput.equalsIgnoreCase(whoIsThere)) {
 				theOutput = kkJokeList.get(currentJoke).getClue();
-				state = SENTCLUE;
+				state = KKProtocolState.SENTCLUE;
 			} else {
 				theOutput = "You're supposed to say \"" + whoIsThere + "\"! " +
 						"Try again. Knock! Knock!";
 			}
-		} else if (state == SENTCLUE) {
+		} else if (state == KKProtocolState.SENTCLUE) {
 			if (theInput.equalsIgnoreCase(kkJokeList.get(currentJoke).getClue() + " who?")) {
 				theOutput = kkJokeList.get(currentJoke).getAnswer() + " Want another? (y/n)";
-				state = ANOTHER;
+				state = KKProtocolState.ANOTHER;
 			} else {
 				theOutput = "You're supposed to say \"" + 
 						kkJokeList.get(currentJoke).getClue() + 
 						" who?\"" + 
 						"! Try again. Knock! Knock!";
-				state = SENTKNOCKKNOCK;
+				state = KKProtocolState.SENTKNOCKKNOCK;
 			}
-		} else if (state == ANOTHER) {
+		} else if (state == KKProtocolState.ANOTHER) {
 			if (theInput.equalsIgnoreCase("y")) {
 				theOutput = "Knock! Knock!";
 				if (currentJoke == (NUMJOKES - 1))
 					currentJoke = 0;
 				else
 					currentJoke++;
-				state = SENTKNOCKKNOCK;
+				state = KKProtocolState.SENTKNOCKKNOCK;
 			} else {
 				theOutput = "Bye";
-				state = WAITING;
+				state = KKProtocolState.WAITING;
 			}
 		}
 		return theOutput;

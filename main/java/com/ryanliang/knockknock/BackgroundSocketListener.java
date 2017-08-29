@@ -15,22 +15,27 @@ import javax.swing.SwingWorker;
  * @version $Revision$
  * @since 1.7
  */
-public class BackgroundSocketListener extends SwingWorker<String, String> {
+public class BackgroundSocketListener extends SwingWorker<Void, String> {
 	
     private ServerSocket serverSocket = null;
 	private int kkServerPort;
+	private String exceptionErrorMessage = "";
+	
     private boolean listening = false;
     private List<KKMultiServerThread> socketThreadList = new LinkedList<KKMultiServerThread>();
 	private JLabel totalClientConectionLabel;
+	private JLabel serverStatusLabel;
 	private int totalClientConectionCounter = 0;
 	
 	/**
 	 * This is the only constructor defined for this class.
 	 * @param kkServerPort Specifies server port number
+	 * @param totalClientConectionLabel2 
 	 * @param connectionStatusLabel A reference JLabel for updating total connection status
 	 */
-    public BackgroundSocketListener(int kkServerPort, JLabel totalClientConectionLabel){
+    public BackgroundSocketListener(int kkServerPort, JLabel serverStatusLabel, JLabel totalClientConectionLabel){
     	this.kkServerPort = kkServerPort;
+    	this.serverStatusLabel = serverStatusLabel;
     	this.totalClientConectionLabel = totalClientConectionLabel;
     }
     
@@ -39,10 +44,20 @@ public class BackgroundSocketListener extends SwingWorker<String, String> {
 	 * @return  
 	 */
 	@Override
-	public String doInBackground(){
+	public Void doInBackground(){
 		listenForClients();
 		
-		return "none";
+		return null;
+	}
+	
+	/**
+	 * This method updates specific Swing components (UI) when doInBackground() is completed. 
+	 */
+	@Override
+	protected void done(){
+		if (exceptionErrorMessage.length() > 1){
+			serverStatusLabel.setText("Server status: " + exceptionErrorMessage);
+		}
 	}
 
 	/**
@@ -90,8 +105,8 @@ public class BackgroundSocketListener extends SwingWorker<String, String> {
         try {
             serverSocket = new ServerSocket(kkServerPort);
         } catch (IOException e) {
-            System.err.println("Could not listen on port:  " + kkServerPort);
-            e.printStackTrace();
+            exceptionErrorMessage = "Could not listen on port " + kkServerPort;
+            System.err.println(exceptionErrorMessage);
         }
 
         try {
