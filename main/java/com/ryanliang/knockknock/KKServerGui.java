@@ -3,6 +3,11 @@ package com.ryanliang.knockknock;
 import java.awt.BorderLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -47,7 +52,7 @@ public class KKServerGui extends JFrame {
 	private final JPanel southPanel = new JPanel();
 	
 	private int kkServerPort = 5555;
-	private JTextField kkServerPortField = new JTextField(String.valueOf(kkServerPort));
+	private JTextField kkServerPortField;
 	
 	private String serverStarted = "Server status: Started";
 	private String serverStopped = "Server status: Stopped";
@@ -66,10 +71,24 @@ public class KKServerGui extends JFrame {
 		
 		super("Knock Knock Server");
 				
+		loadData();
 		organizeUI();
 		addListeners();
 			
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+	}
+
+	private void loadData() {
+
+		try {
+			FileInputStream fileIn = new FileInputStream("server-info.dat");
+			ObjectInputStream in = new ObjectInputStream(fileIn);
+			kkServerPort = (int) in.readObject();
+			in.close();
+		} catch (Exception e) {
+			kkServerPort = 5555;
+			e.printStackTrace();
+		}	
 	}
 
 	/**
@@ -91,6 +110,8 @@ public class KKServerGui extends JFrame {
 		toolBar.add(startServerToolBarButton);
 		toolBar.add(stopServerToolBarButton);
 		stopServerToolBarButton.setEnabled(false);
+		
+		kkServerPortField = new JTextField(String.valueOf(kkServerPort));
 		
 		serverStatusLabel.setText(serverStopped);
 		northPanel.setLayout(new BorderLayout());
@@ -208,8 +229,21 @@ public class KKServerGui extends JFrame {
     	int answer = JOptionPane.showConfirmDialog(null, "Exit App?");
     	if (answer == JOptionPane.YES_OPTION){
     		stopServer(); 
+    		saveData();
     		System.exit(0);
     	}
     }
+
+	private void saveData() {
+		
+		try {
+			FileOutputStream fileOut = new FileOutputStream("server-info.dat");
+			ObjectOutputStream out = new ObjectOutputStream(fileOut);
+			out.writeObject(kkServerPort);
+			out.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 }

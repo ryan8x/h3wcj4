@@ -36,7 +36,6 @@ public class KKClient {
 /*
 -real time total client connections
 
--save config via serialize or normal way
 -serialized network transmission
 -thread pool
 
