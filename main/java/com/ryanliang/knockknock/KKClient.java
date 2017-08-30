@@ -33,3 +33,14 @@ public class KKClient {
 	}
 
 }
+/*
+-real time total client connections
+
+-save config via serialize or normal way
+-serialized network transmission
+-thread pool
+
+-display total jokes?
+-load joke file via UI?
+-Add jokes via UI?
+*/

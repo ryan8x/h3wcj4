@@ -12,12 +12,8 @@ import java.io.*;
  * @since 1.7
  */
 public class KnockKnockProtocol{
-	/*private static final int WAITING = 0;
-	private static final int SENTKNOCKKNOCK = 1;
-	private static final int SENTCLUE = 2;
-	private static final int ANOTHER = 3;
-*/
-	private final int NUMJOKES;
+
+	private int NUMJOKES;
 
 	private KKProtocolState state = KKProtocolState.WAITING;
 	private int currentJoke = 0;
@@ -32,12 +28,19 @@ public class KnockKnockProtocol{
 	 * This is the only constructor defined for this class.
 	 */
 	public KnockKnockProtocol(){
-		model = new KKModel();
-		kkJokeList = model.getListOfKKJokes();
-		Collections.shuffle(kkJokeList);
-		NUMJOKES = kkJokeList.size();
+		getKKJokes();
 	}
 	
+	/**
+	 * This method obtain the list of jokes.
+	 */
+	private void getKKJokes() {
+		model = new KKModel();
+		kkJokeList = model.getListOfKKJokes();
+		NUMJOKES = kkJokeList.size();
+		Collections.shuffle(kkJokeList);
+	}
+
 	/**
 	 * This method process the customized network communication protocols between the server and the client.
 	 */

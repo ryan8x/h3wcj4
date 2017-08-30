@@ -3,6 +3,7 @@ package com.ryanliang.knockknock;
 import java.awt.BorderLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -50,6 +51,8 @@ public class KKServerGui extends JFrame {
 	
 	private String serverStarted = "Server status: Started";
 	private String serverStopped = "Server status: Stopped";
+	private String jokesNotFound = "Server status: Jokes not found";
+	
 	private JLabel serverStatusLabel = new JLabel("");
 	
 	private JLabel totalClientConectionLabel = new JLabel("");
@@ -177,15 +180,24 @@ public class KKServerGui extends JFrame {
 	 * This method starts the server.
 	 */
 	private void startServer() {
+
+		KKModellable model = new KKModel();
+		List<KKJoke> kkJokeList = model.getListOfKKJokes();
 		
-		if (task == null){
-			task = new BackgroundSocketListener(kkServerPort, serverStatusLabel, totalClientConectionLabel);
-			task.execute();	
-			serverStatusLabel.setText(serverStarted);
-			totalClientConectionLabel.setText("Client connections: 0");
-			
-			startServerToolBarButton.setEnabled(false);
-			stopServerToolBarButton.setEnabled(true);
+		if (kkJokeList.size() > 0){
+			if (task == null){
+				task = new BackgroundSocketListener(kkServerPort, serverStatusLabel, totalClientConectionLabel);
+				task.execute();	
+				serverStatusLabel.setText(serverStarted);
+				totalClientConectionLabel.setText("Client connections: 0");
+
+				startServerToolBarButton.setEnabled(false);
+				stopServerToolBarButton.setEnabled(true);
+			}
+		}
+		else{
+			//Do not start server because joke list is empty
+			serverStatusLabel.setText(jokesNotFound);
 		}
 	}
 

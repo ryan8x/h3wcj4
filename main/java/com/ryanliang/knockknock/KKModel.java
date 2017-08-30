@@ -37,43 +37,47 @@ public class KKModel implements KKModellable {
 	private void openFile() {
 		
 		try {
-			input = new Scanner(Paths.get("clients.txt"));
+			input = new Scanner(Paths.get("kk-jokes.txt"));
 		} catch (IOException e) {
 			System.err.println("Error opening file");
-			//e.printStackTrace();
-		}
+			}
+		
 	}
 
 	/**
 	 * This method is for obtaining data from a file. 
 	 */
 	private void readFile() {
-		kkJokeList = new ArrayList<KKJoke>(50);
-		String clue;
-		String answer;
-		String line;
-		String [] lineParts;
-		try {
-			while (input.hasNextLine()){
-				line = input.nextLine();
-				lineParts = line.split(delimiter);	
-				
-				if (lineParts.length == 2){
-					clue = lineParts[0].trim();
-					answer = lineParts[1].trim();
-					if (clue.length() > 0 && answer.length() > 0){
-					    kkJokeList.add(new KKJoke(clue, answer));
+
+		if (input != null){
+			kkJokeList = new ArrayList<KKJoke>(50);
+			String clue;
+			String answer;
+			String line;
+			String [] lineParts;
+			try {
+				while (input.hasNextLine()){
+					line = input.nextLine();
+					lineParts = line.split(delimiter);	
+
+					if (lineParts.length == 2){
+						clue = lineParts[0].trim();
+						answer = lineParts[1].trim();
+						if (clue.length() > 0 && answer.length() > 0){
+							kkJokeList.add(new KKJoke(clue, answer));
+						}
 					}
 				}
+			} 
+			catch (NoSuchElementException e) {
+				System.err.println("File improperly formed");
+				//e.printStackTrace();
+				kkJokeList = null;
 			}
-		} catch (NoSuchElementException e) {
-			System.err.println("File improperly formed");
-			//e.printStackTrace();
-			kkJokeList = null;
-		}
-		catch (IllegalStateException e) {
-			System.err.println("Error reading from file");
-			kkJokeList = null;
+			catch (IllegalStateException e) {
+				System.err.println("Error reading from file");
+				kkJokeList = null;
+			}
 		}
 	}
 
@@ -91,13 +95,25 @@ public class KKModel implements KKModellable {
 	@Override
 	public List<KKJoke> getListOfKKJokes() {
 		
-		List<KKJoke> copyList = new ArrayList<KKJoke>(kkJokeList.size());
+		List<KKJoke> copyList;
 		
-		for (KKJoke joke : kkJokeList){
-			copyList.add(joke);
+		if (kkJokeList != null){
+			int listSize = kkJokeList.size();
+
+				copyList = new ArrayList<KKJoke>(listSize);
+
+				for (KKJoke joke : kkJokeList){
+					copyList.add(joke);
+				}
+			
+			if (listSize < 1){
+				kkJokeList = null;
+			}
 		}
-		
-		//return a new duplicated copy instead of the original reference static list.
-		return copyList;	
+		else{
+			//empty list
+			copyList = new ArrayList<KKJoke>(0);
+		}
+		return copyList;
 	}
 }
