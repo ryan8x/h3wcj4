@@ -78,19 +78,6 @@ public class KKServerGui extends JFrame {
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 	}
 
-	private void loadData() {
-
-		try {
-			FileInputStream fileIn = new FileInputStream("server-info.dat");
-			ObjectInputStream in = new ObjectInputStream(fileIn);
-			kkServerPort = (int) in.readObject();
-			in.close();
-		} catch (Exception e) {
-			kkServerPort = 5555;
-			e.printStackTrace();
-		}	
-	}
-
 	/**
 	 * This method arranges the layout of the GUI components. 
 	 */
@@ -234,6 +221,9 @@ public class KKServerGui extends JFrame {
     	}
     }
 
+	/**
+	 * This method saves the server port info to a file.
+	 */
 	private void saveData() {
 		
 		try {
@@ -244,6 +234,22 @@ public class KKServerGui extends JFrame {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * This method restores the server port info from a file.
+	 */
+	private void loadData() {
+
+		try {
+			FileInputStream fileIn = new FileInputStream("server-info.dat");
+			ObjectInputStream in = new ObjectInputStream(fileIn);
+			kkServerPort = (int) in.readObject();
+			in.close();
+		} catch (Exception e) {
+			kkServerPort = 5555;
+			e.printStackTrace();
+		}	
 	}
 
 }

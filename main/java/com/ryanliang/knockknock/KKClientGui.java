@@ -3,6 +3,10 @@ package com.ryanliang.knockknock;
 import java.awt.BorderLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -48,8 +52,8 @@ public class KKClientGui extends JFrame {
 	
 	private String kkServerHost = "localhost";
 	private int kkServerPort = 5555;
-	private JTextField kkServerHostField = new JTextField(kkServerHost);
-	private JTextField kkServerPortField = new JTextField(String.valueOf(kkServerPort));
+	private JTextField kkServerHostField;
+	private JTextField kkServerPortField;
 	
 	private String online = "Connection status: Online";
 	private String offline = "Connection status: Offline";
@@ -66,7 +70,8 @@ public class KKClientGui extends JFrame {
 	public KKClientGui(){
 		
 		super("Knock Knock Client");
-				
+		
+		loadData();
 		organizeUI();
 		addListeners();
 			
@@ -91,6 +96,9 @@ public class KKClientGui extends JFrame {
 		
 		toolBar.add(connectToolBarButton);
 		toolBar.add(disconnectToolBarButton);
+		
+		kkServerHostField = new JTextField(kkServerHost);
+		kkServerPortField = new JTextField(String.valueOf(kkServerPort));
 		
 		connectionStatusLabel.setText(offline);
 		northPanel.setLayout(new BorderLayout());
@@ -207,8 +215,42 @@ public class KKClientGui extends JFrame {
     	int answer = JOptionPane.showConfirmDialog(null, "Exit App?");
     	if (answer == JOptionPane.YES_OPTION){
     		disconnect(); 
+    		saveData();
     		System.exit(0);
     	}
     }
+	
+	/**
+	 * This method saves the server host and port info to a file.
+	 */
+	private void saveData() {
+		
+		try {
+			FileOutputStream fileOut = new FileOutputStream("client-info.dat");
+			ObjectOutputStream out = new ObjectOutputStream(fileOut);
+			out.writeObject(kkServerHost);
+			out.writeObject(kkServerPort);
+			out.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * This method restores the server host and port info from a file.
+	 */
+	private void loadData() {
 
+		try {
+			FileInputStream fileIn = new FileInputStream("client-info.dat");
+			ObjectInputStream in = new ObjectInputStream(fileIn);
+			kkServerHost = (String) in.readObject();
+			kkServerPort = (int) in.readObject();
+			in.close();
+		} catch (Exception e) {
+			kkServerHost = "localhost";
+			kkServerPort = 5555;
+			e.printStackTrace();
+		}	
+	}
 }
