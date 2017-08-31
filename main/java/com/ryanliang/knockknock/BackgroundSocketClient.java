@@ -97,6 +97,11 @@ public class BackgroundSocketClient extends SwingWorker<Void, String> {
 
 			while ((fromServer = in.readLine()) != null) {
 				
+				//For checking if client connection is still good.  Client ignores this message from the server.
+				if (fromServer.equals("?heartbeat?")){
+					continue;
+				}
+				
 				publish(fromServer);
 				
 				if (fromServer.equals("Bye")){

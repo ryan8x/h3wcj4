@@ -63,6 +63,7 @@ public class KKServerGui extends JFrame {
 	private JLabel totalClientConectionLabel = new JLabel("");
 	
 	private BackgroundSocketListener task = null;
+	private BackgroundConnectionCheck task2 = null;
     
 	/**
 	 * This is the only constructor defined for this class.
@@ -180,6 +181,8 @@ public class KKServerGui extends JFrame {
 			
 			startServerToolBarButton.setEnabled(true);
 			stopServerToolBarButton.setEnabled(false);
+			
+			task2.stopChecking();
 		}
 
 	}
@@ -201,6 +204,8 @@ public class KKServerGui extends JFrame {
 
 				startServerToolBarButton.setEnabled(false);
 				stopServerToolBarButton.setEnabled(true);
+				
+				task2 = new BackgroundConnectionCheck(task.getSocketThreadList(), totalClientConectionLabel);
 			}
 		}
 		else{

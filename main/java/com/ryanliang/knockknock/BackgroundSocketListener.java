@@ -15,7 +15,7 @@ import javax.swing.SwingWorker;
  * @version $Revision$
  * @since 1.7
  */
-public class BackgroundSocketListener extends SwingWorker<Void, String> {
+public class BackgroundSocketListener extends SwingWorker<Void, Void> {
 	
     private ServerSocket serverSocket = null;
 	private int kkServerPort;
@@ -59,16 +59,16 @@ public class BackgroundSocketListener extends SwingWorker<Void, String> {
 			serverStatusLabel.setText("Server status: " + exceptionErrorMessage);
 		}
 	}
-
-	/**
-	 * This method updates specific Swing components (UI) while doInBackground() is in progress. 
-	 */
+/*
+	
+	// This method updates specific Swing components (UI) while doInBackground() is in progress. 
+	
     @Override
     protected void process(List<String> chunks) {
 
     	totalClientConectionLabel.setText("Client connections: " + chunks.get(0));
 	}
-    
+ */   
 	/**
 	 * This method is for freeing up resources. 
 	 */
@@ -116,11 +116,15 @@ public class BackgroundSocketListener extends SwingWorker<Void, String> {
 				serverSocketThread.start();
 				
 				totalClientConectionCounter++;
-				publish(String.valueOf(totalClientConectionCounter));
+				//publish(String.valueOf(totalClientConectionCounter));
 			}
 		}
         catch (IOException e) {
             e.printStackTrace();
 		}
+	}
+	public List<KKMultiServerThread> getSocketThreadList(){
+		
+		return socketThreadList;
 	}
 }

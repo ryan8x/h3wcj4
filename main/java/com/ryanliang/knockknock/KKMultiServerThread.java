@@ -21,8 +21,24 @@ public class KKMultiServerThread extends Thread {
 	public KKMultiServerThread(Socket socket) {
 		super("KKMultiServerThread");
 		this.socket = socket;
+		//initializeStreams();
 	}
 
+/*	private void initializeStreams() {
+		
+		try {
+			out = new PrintWriter(socket.getOutputStream(), true);
+			in = new BufferedReader(
+					new InputStreamReader(
+					socket.getInputStream()));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		finally{
+			closeConnection();
+		}
+	}
+*/
 	/**
 	 * This method runs on a unique thread and is for processing network communication with the knock knock client.
 	 */
@@ -42,7 +58,7 @@ public class KKMultiServerThread extends Thread {
 			while ((inputLine = in.readLine()) != null) {
 				outputLine = kkp.processInput(inputLine);
 				out.println(outputLine);
-				if (outputLine.equals("Bye"))  //possible bug here???  but maybe fixed now.
+				if (outputLine.equals("Bye"))  
 					break;
 			}
 		} catch (IOException e) {
@@ -70,5 +86,28 @@ public class KKMultiServerThread extends Thread {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}			
+	}
+	
+	/**
+	 * This method is for checking if client is still alive.
+	 */
+	public boolean checkConnection() {
+		boolean alive = true;
+		try {
+			if (socket != null){
+				PrintWriter out2 = new PrintWriter(socket.getOutputStream(), true);
+				//BufferedReader in2 = new BufferedReader(
+						//new InputStreamReader(
+								//socket.getInputStream()));
+				
+				out2.println("?heartbeat?");
+				//in2.read();
+			}
+		} catch (IOException e) {
+			alive = false;
+			e.printStackTrace();
+			closeConnection();
+		}
+		return alive;
 	}
 }
