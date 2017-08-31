@@ -62,8 +62,8 @@ public class KKServerGui extends JFrame {
 	
 	private JLabel totalClientConectionLabel = new JLabel("");
 	
-	private BackgroundSocketListener task = null;
-	private BackgroundConnectionCheck task2 = null;
+	private BackgroundSocketListener socketListeningTask = null;
+	private BackgroundConnectionCheck connectionCheckingTask = null;
     
 	/**
 	 * This is the only constructor defined for this class.
@@ -173,16 +173,16 @@ public class KKServerGui extends JFrame {
 	 */
 	private void stopServer() {
 		
-		if (task != null){
-			task.stopServer();
-			task = null;
+		if (socketListeningTask != null){
+			socketListeningTask.stopServer();
+			socketListeningTask = null;
 			serverStatusLabel.setText(serverStopped);
 			totalClientConectionLabel.setText("Client connections: 0");
 			
 			startServerToolBarButton.setEnabled(true);
 			stopServerToolBarButton.setEnabled(false);
 			
-			task2.stopChecking();
+			connectionCheckingTask.stopCheckingConnection();
 		}
 
 	}
@@ -196,16 +196,17 @@ public class KKServerGui extends JFrame {
 		List<KKJoke> kkJokeList = model.getListOfKKJokes();
 		
 		if (kkJokeList.size() > 0){
-			if (task == null){
-				task = new BackgroundSocketListener(kkServerPort, serverStatusLabel, totalClientConectionLabel);
-				task.execute();	
+			if (socketListeningTask == null){
+				socketListeningTask = new BackgroundSocketListener(kkServerPort, serverStatusLabel);
+				socketListeningTask.execute();	
 				serverStatusLabel.setText(serverStarted);
 				totalClientConectionLabel.setText("Client connections: 0");
 
 				startServerToolBarButton.setEnabled(false);
 				stopServerToolBarButton.setEnabled(true);
 				
-				task2 = new BackgroundConnectionCheck(task.getSocketThreadList(), totalClientConectionLabel);
+				connectionCheckingTask = new BackgroundConnectionCheck(socketListeningTask.getSocketThreadList(), totalClientConectionLabel);
+				connectionCheckingTask.execute();
 			}
 		}
 		else{

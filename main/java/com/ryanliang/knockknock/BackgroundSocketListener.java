@@ -23,9 +23,7 @@ public class BackgroundSocketListener extends SwingWorker<Void, Void> {
 	
     private boolean listening = false;
     private List<KKMultiServerThread> socketThreadList = new LinkedList<KKMultiServerThread>();
-	private JLabel totalClientConectionLabel;
 	private JLabel serverStatusLabel;
-	private int totalClientConectionCounter = 0;
 	
 	/**
 	 * This is the only constructor defined for this class.
@@ -33,10 +31,9 @@ public class BackgroundSocketListener extends SwingWorker<Void, Void> {
 	 * @param totalClientConectionLabel2 
 	 * @param connectionStatusLabel A reference JLabel for updating total connection status
 	 */
-    public BackgroundSocketListener(int kkServerPort, JLabel serverStatusLabel, JLabel totalClientConectionLabel){
+    public BackgroundSocketListener(int kkServerPort, JLabel serverStatusLabel){
     	this.kkServerPort = kkServerPort;
     	this.serverStatusLabel = serverStatusLabel;
-    	this.totalClientConectionLabel = totalClientConectionLabel;
     }
     
 	/**
@@ -59,16 +56,7 @@ public class BackgroundSocketListener extends SwingWorker<Void, Void> {
 			serverStatusLabel.setText("Server status: " + exceptionErrorMessage);
 		}
 	}
-/*
-	
-	// This method updates specific Swing components (UI) while doInBackground() is in progress. 
-	
-    @Override
-    protected void process(List<String> chunks) {
-
-    	totalClientConectionLabel.setText("Client connections: " + chunks.get(0));
-	}
- */   
+  
 	/**
 	 * This method is for freeing up resources. 
 	 */
@@ -85,7 +73,6 @@ public class BackgroundSocketListener extends SwingWorker<Void, Void> {
 					}
 				}
 				socketThreadList.clear();
-				totalClientConectionCounter = 0;
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -114,9 +101,6 @@ public class BackgroundSocketListener extends SwingWorker<Void, Void> {
 				KKMultiServerThread serverSocketThread = new KKMultiServerThread(serverSocket.accept());
 				socketThreadList.add(serverSocketThread);
 				serverSocketThread.start();
-				
-				totalClientConectionCounter++;
-				//publish(String.valueOf(totalClientConectionCounter));
 			}
 		}
         catch (IOException e) {

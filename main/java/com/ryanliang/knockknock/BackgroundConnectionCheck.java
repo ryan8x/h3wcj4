@@ -23,7 +23,7 @@ public class BackgroundConnectionCheck extends SwingWorker<Void, String> {
 		while (runLoop){
 			Thread.sleep(1000);
 			for (KKMultiServerThread kk : socketThreadList){
-				if (kk.checkConnection() == false){
+				if (!kk.isSocketAlive()){
 					socketThreadList.remove(kk);
 				}
 			}
@@ -39,7 +39,7 @@ public class BackgroundConnectionCheck extends SwingWorker<Void, String> {
     	totalClientConectionLabel.setText("Client connections: " + chunks.get(0));
 	}
     
-	public void stopChecking(){
+	public void stopCheckingConnection(){
 		runLoop = false;
 	}
 }

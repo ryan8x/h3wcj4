@@ -34,8 +34,9 @@ public class KKClient {
 
 }
 /*
--real time total client connections
+-fix connection status when socket is closed or connection is failed.
 
+-real time total client connections
 -serialized network transmission
 -thread pool
 

@@ -91,6 +91,7 @@ public class KKModel implements KKModellable {
 	
 	/**
 	 * This method returns a duplicated copy of knock knock list of jokes.
+	 * @return A List<KKJoke> object containing list of jokes.  
 	 */
 	@Override
 	public List<KKJoke> getListOfKKJokes() {
