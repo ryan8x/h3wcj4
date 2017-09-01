@@ -21,8 +21,7 @@ public class KnockKnockProtocol{
 	private KKModellable model;
 	private List<KKJoke> kkJokeList;
 	
-	//private final String whoIsThere = "Who's there?";
-	private final String whoIsThere = "a";
+	private final String whoIsThere = "Who's there?";
 
 	/**
 	 * This is the only constructor defined for this class.

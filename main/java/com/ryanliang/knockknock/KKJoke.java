@@ -8,8 +8,8 @@ package com.ryanliang.knockknock;
  */
 public class KKJoke {
 
-	private String clue;
-	private String answer;
+	private final String clue;
+	private final String answer;
 	
 	/**
 	 * This is the only constructor defined for this class.

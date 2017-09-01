@@ -38,7 +38,7 @@ public class BackgroundSocketListener extends SwingWorker<Void, Void> {
     
 	/**
 	 * This method performs a task in the background in a SwingWorker thread.
-	 * @return  
+	 * @return null 
 	 */
 	@Override
 	public Void doInBackground(){
@@ -53,7 +53,7 @@ public class BackgroundSocketListener extends SwingWorker<Void, Void> {
 	@Override
 	protected void done(){
 		if (exceptionErrorMessage.length() > 1){
-			serverStatusLabel.setText("Server status: " + exceptionErrorMessage);
+			serverStatusLabel.setText("<html>Connection status: <font color='red'>" + exceptionErrorMessage + "</font></html>");
 		}
 	}
   

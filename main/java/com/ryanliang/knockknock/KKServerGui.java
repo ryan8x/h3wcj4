@@ -4,8 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.List;
@@ -18,11 +18,9 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
-import javax.swing.border.BevelBorder;
 
 /**
  * KKServerGui is a JFrame subclass defining the knock knock server app GUI.
@@ -46,6 +44,7 @@ public class KKServerGui extends JFrame {
 	private final JToolBar toolBar = new JToolBar();
 	private final JButton startServerToolBarButton = new JButton("Start Server"); 
 	private final JButton stopServerToolBarButton = new JButton("Stop Server"); 
+	private final JButton kkClientToolBarButton = new JButton("Launch Client"); 
 	
 	private final JPanel northPanel = new JPanel();
 	private final JPanel centerPanel = new JPanel();
@@ -54,9 +53,10 @@ public class KKServerGui extends JFrame {
 	private int kkServerPort = 5555;
 	private JTextField kkServerPortField;
 	
-	private String serverStarted = "Server status: Started";
-	private String serverStopped = "Server status: Stopped";
-	private String jokesNotFound = "Server status: Jokes not found";
+	private final String serverStarted = "<html>Server status: <font color='green'> Started</font></html>";
+	private final String serverStopped = "<html>Server status: <font color='blue'> Stopped</font></html>";
+	private final String jokesNotFound = "<html>Server status: <font color='red'>Jokes not found or missing </font> the <font color='blue'>kk-jokes.txt</font> file which must be stored in the same path as this server app.  <br>"
+			+ "Each line or joke in the <font color='blue'>kk-jokes.txt </font>file must also be formatted as <font color='blue'>clue ### answer</font>.</html>";
 	
 	private JLabel serverStatusLabel = new JLabel("");
 	
@@ -98,6 +98,8 @@ public class KKServerGui extends JFrame {
 		toolBar.add(startServerToolBarButton);
 		toolBar.add(stopServerToolBarButton);
 		stopServerToolBarButton.setEnabled(false);
+		toolBar.addSeparator();
+		toolBar.add(kkClientToolBarButton);
 		
 		kkServerPortField = new JTextField(String.valueOf(kkServerPort));
 		
@@ -142,6 +144,16 @@ public class KKServerGui extends JFrame {
 			stopServerToolBarButton.setEnabled(false);
 		});
 
+		kkClientToolBarButton.addActionListener(event -> {
+
+			try {
+				Runtime.getRuntime().exec("java -jar KKClient.jar");
+			} catch (IOException e1) {
+				e1.printStackTrace();
+				Utility.displayErrorMessage("Fail to find or launch KKClient.jar client app.  Make sure Java run time (JRE) is installed and KKClient.jar is stored in the same path as this server app.");
+			}
+		});
+		
 		addWindowListener(new WindowAdapter() {
 		    public void windowClosing(WindowEvent e) {
 		    	quitApp();	
@@ -212,6 +224,8 @@ public class KKServerGui extends JFrame {
 		else{
 			//Do not start server because joke list is empty
 			serverStatusLabel.setText(jokesNotFound);
+			Utility.displayErrorMessage("Jokes not found or missing the \" kk-jokes.txt \" file which must be stored in the same path as this server app.  "
+			+ "Each line or joke in the \" kk-jokes.txt \" file must also be formatted as \" clue ### answer \" without the quotes.");
 		}
 	}
 

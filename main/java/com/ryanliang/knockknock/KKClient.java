@@ -33,14 +33,3 @@ public class KKClient {
 	}
 
 }
-/*
--fix connection status when socket is closed or connection is failed.
-
--real time total client connections
--serialized network transmission
--thread pool
-
--display total jokes?
--load joke file via UI?
--Add jokes via UI?
-*/

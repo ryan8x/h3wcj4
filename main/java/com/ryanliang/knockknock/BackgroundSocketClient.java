@@ -35,15 +35,15 @@ public class BackgroundSocketClient extends SwingWorker<Void, String> {
 	
 	private String exceptionErrorMessage = "";
 	
-	private PrintWriter out = null;
-	private BufferedReader in = null;
+	private PrintWriter out = null;;
+	private BufferedReader in  = null;
     
 	/**
 	 * This is the only constructor defined for this class.
 	 * @param kkServerHost Specifies server host name or ip address
 	 * @param kkServerPort Specifies server port number
 	 * @param connectionStatusLabel A reference JLabel for updating connection status
-	 * @param chatTextArea A reference JTextArea for updating chat text.
+	 * @param chatTextArea A reference JTextArea for updating chat text
 	 */
     public BackgroundSocketClient(String kkServerHost, int kkServerPort, JLabel connectionStatusLabel, JTextArea chatTextArea){
     	this.kkServerHost = kkServerHost;
@@ -54,7 +54,7 @@ public class BackgroundSocketClient extends SwingWorker<Void, String> {
     
 	/**
 	 * This method performs a task in the background in a SwingWorker thread.
-	 * @return  
+	 * @return null 
 	 */
 	@Override
 	public Void doInBackground(){
@@ -69,7 +69,7 @@ public class BackgroundSocketClient extends SwingWorker<Void, String> {
 	@Override
 	protected void done(){
 		if (exceptionErrorMessage.length() > 1){
-			connectionStatusLabel.setText("Connection status: Fail");
+			connectionStatusLabel.setText("<html>Connection status: <font color='red'>Fail</font></html>");
 			chatTextArea.append(exceptionErrorMessage + "\n");
 		}
 	}

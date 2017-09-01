@@ -55,8 +55,8 @@ public class KKClientGui extends JFrame {
 	private JTextField kkServerHostField;
 	private JTextField kkServerPortField;
 	
-	private String online = "Connection status: Online";
-	private String offline = "Connection status: Offline";
+	private final String online = "<html>Connection status: <font color='green'>Online</font></html>";
+	private final String offline = "<html>Connection status: <font color='blue'>Offline</font></html>";
 	private JLabel connectionStatusLabel = new JLabel("");
 	
 	private JTextArea chatTextArea = new JTextArea();
@@ -205,7 +205,7 @@ public class KKClientGui extends JFrame {
 		
 		connectionStatusLabel.setText(online);
 		connectToolBarButton.setEnabled(false);
-		disconnectToolBarButton.setEnabled(true);
+		disconnectToolBarButton.setEnabled(true);	
 	}
 
 	/**

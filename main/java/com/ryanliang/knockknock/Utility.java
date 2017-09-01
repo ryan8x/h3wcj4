@@ -1,5 +1,7 @@
 package com.ryanliang.knockknock;
 
+import javax.swing.JOptionPane;
+
 /**
  * Utility class defines static utility method(s). 
  * @author Ryan L.
@@ -26,4 +28,13 @@ public class Utility {
 	  return true;  
 	}
 	
+	/**
+	 * This method simply pops up a dialog window with a message.
+	 * @param message Is a string
+	 */
+	public static void displayErrorMessage(String message) {
+
+		JOptionPane.showMessageDialog(null, message, "alert", JOptionPane.ERROR_MESSAGE);  
+
+	}
 }
