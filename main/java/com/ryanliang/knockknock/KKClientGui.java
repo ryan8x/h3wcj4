@@ -232,7 +232,8 @@ public class KKClientGui extends JFrame {
 			out.writeObject(kkServerPort);
 			out.close();
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
+			System.err.println("saving client-info.dat file is encountering an error for some reason.");
 		}
 	}
 	
@@ -250,7 +251,8 @@ public class KKClientGui extends JFrame {
 		} catch (Exception e) {
 			kkServerHost = "localhost";
 			kkServerPort = 5555;
-			e.printStackTrace();
+			//e.printStackTrace();
+			System.err.println("client-info.dat file is likely missing but it should be created automatically when this app is closed.");
 		}	
 	}
 }

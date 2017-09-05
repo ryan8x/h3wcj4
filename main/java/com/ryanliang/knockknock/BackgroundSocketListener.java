@@ -75,7 +75,8 @@ public class BackgroundSocketListener extends SwingWorker<Void, Void> {
 				socketThreadList.clear();
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
+			System.out.println("Server socket is being closed.");
 		}
 		finally{
 			listening = false;
@@ -104,7 +105,8 @@ public class BackgroundSocketListener extends SwingWorker<Void, Void> {
 			}
 		}
         catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+			System.err.println("Server listening socket is encountering an error likely due socket being closed.");
 		}
 	}
 	public List<KKMultiServerThread> getSocketThreadList(){

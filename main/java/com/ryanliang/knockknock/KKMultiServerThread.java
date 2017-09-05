@@ -48,7 +48,8 @@ public class KKMultiServerThread extends Thread {
 					break;
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
+			System.err.println("Server side socket network communication error is encountered for some reason.");
 		}
 		finally{
 			closeConnection();
@@ -71,7 +72,8 @@ public class KKMultiServerThread extends Thread {
 				socket = null;
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
+			System.err.println("Server side socket is being closed.");
 		}			
 	}
 	

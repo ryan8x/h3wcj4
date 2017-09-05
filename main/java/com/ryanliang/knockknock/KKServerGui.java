@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -245,14 +246,25 @@ public class KKServerGui extends JFrame {
 	 * This method saves the server port info to a file.
 	 */
 	private void saveData() {
-		
+		ObjectOutputStream out = null;
 		try {
 			FileOutputStream fileOut = new FileOutputStream("server-info.dat");
-			ObjectOutputStream out = new ObjectOutputStream(fileOut);
+			out = new ObjectOutputStream(fileOut);
 			out.writeObject(kkServerPort);
-			out.close();
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			System.err.println("saving server-info.dat file is encountering an error for some reason.");	
+		} catch (IOException e) {
+			System.err.println("saving server-info.dat file is encountering an error for some reason.");	
+		} 
+		finally {
+			if (out != null){
+				try{
+					out.close();
+				}
+				catch (IOException e){
+					System.err.println("saving server-info.dat file is encountering an error for some reason.");	
+				}
+			}
 		}
 	}
 	
@@ -268,7 +280,8 @@ public class KKServerGui extends JFrame {
 			in.close();
 		} catch (Exception e) {
 			kkServerPort = 5555;
-			e.printStackTrace();
+			//e.printStackTrace();
+			System.err.println("server-info.dat file is likely missing but it should be created automatically when this app is closed.");
 		}	
 	}
 
