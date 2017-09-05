@@ -76,7 +76,7 @@ public class BackgroundSocketListener extends SwingWorker<Void, Void> {
 			}
 		} catch (IOException e) {
 			//e.printStackTrace();
-			System.out.println("Server socket is being closed.");
+			System.err.println("Server socket is being closed.");
 		}
 		finally{
 			listening = false;
