@@ -3,6 +3,7 @@ package com.ryanliang.knockknock;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.SocketTimeoutException;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -66,10 +67,11 @@ public class BackgroundSocketListener extends SwingWorker<Void, Void> {
 			if (serverSocket != null){
 				serverSocket.close();
 				serverSocket = null;
-				
+						
 				for (KKMultiServerThread socketThread : socketThreadList){
 					if (socketThread != null){
 						socketThread.closeConnection();
+						socketThread = null;
 					}
 				}
 				socketThreadList.clear();

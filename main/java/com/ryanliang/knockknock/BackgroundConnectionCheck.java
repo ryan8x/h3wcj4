@@ -32,19 +32,26 @@ public class BackgroundConnectionCheck extends SwingWorker<Void, String> {
 	 */
 	@Override
 	protected Void doInBackground() throws Exception {
-
+		int cc=0;
+		int listSize;
 		runLoop = true;
-
+		
 		while (runLoop){
 			Thread.sleep(1000);
-			for (KKMultiServerThread kk : socketThreadList){
-				if (!kk.isSocketAlive()){
-					socketThreadList.remove(kk);
+
+/*
+			listSize = socketThreadList.size();
+			publish(String.valueOf(listSize));
+
+			for (int i=0; i<listSize; i++){
+				if (!socketThreadList.get(i).isSocketAlive()){
+					socketThreadList.remove(i);   //thread safety issue causing problem?  need to resolve.
 				}
 			}
-			publish(String.valueOf(socketThreadList.size()));
+*/
+			publish(String.valueOf(ConnectionCounter.getConnectionCounter()));
 		}
-		
+	
 		return null;
 	}
 	

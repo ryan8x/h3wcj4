@@ -22,6 +22,7 @@ public class KKMultiServerThread extends Thread {
 	public KKMultiServerThread(Socket socket) {
 		super("KKMultiServerThread");
 		this.socket = socket;
+		ConnectionCounter.increaseConnectionCounter();
 	}
 
 	/**
@@ -53,6 +54,7 @@ public class KKMultiServerThread extends Thread {
 		}
 		finally{
 			closeConnection();
+			ConnectionCounter.decreaseConnectionCounter();
 			socketAlive = false;
 		}
 	}
@@ -84,4 +86,5 @@ public class KKMultiServerThread extends Thread {
 	public boolean isSocketAlive() {
 		return socketAlive;
 	}
+
 }
