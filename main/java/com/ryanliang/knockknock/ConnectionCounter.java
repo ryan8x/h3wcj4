@@ -13,8 +13,8 @@ public class ConnectionCounter {
 	 * This method return the value of the counter.
 	 * @return The value of the counter 
 	 */
-	public static int getConnectionCounter() {
-		//This method not need to be synchronized as it is read only.
+	public static synchronized int getConnectionCounter() {
+
 		return connectionCounter;
 	}
 
@@ -22,7 +22,7 @@ public class ConnectionCounter {
 	 * This method increases the counter by 1. 
 	 */
 	public static synchronized void increaseConnectionCounter() {
-		//This method may not need to be synchronized as server will only accept client connection one at a time.
+
 		connectionCounter++;
 	}
 	

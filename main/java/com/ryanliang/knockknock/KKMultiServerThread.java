@@ -13,8 +13,7 @@ public class KKMultiServerThread extends Thread {
 	private Socket socket = null;
 	private PrintWriter out = null;
 	private BufferedReader in = null;
-	private boolean socketAlive = true;
-
+	
 	/**
 	 * This is the only constructor defined for this class.
 	 * @param socket Is a socket connection with a client
@@ -55,7 +54,6 @@ public class KKMultiServerThread extends Thread {
 		finally{
 			closeConnection();
 			ConnectionCounter.decreaseConnectionCounter();
-			socketAlive = false;
 		}
 	}
 
@@ -78,13 +76,4 @@ public class KKMultiServerThread extends Thread {
 			System.err.println("Server side socket is being closed.");
 		}			
 	}
-	
-	/**
-	 * This method returns the status of the socket.
-	 * @return A a boolean value.   
-	 */
-	public boolean isSocketAlive() {
-		return socketAlive;
-	}
-
 }

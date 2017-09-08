@@ -35,7 +35,7 @@ public class BackgroundSocketClient extends SwingWorker<Void, String> {
 	
 	private String exceptionErrorMessage = "";
 	
-	private PrintWriter out = null;;
+	private PrintWriter out = null;
 	private BufferedReader in  = null;
     
 	/**

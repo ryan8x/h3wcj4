@@ -111,8 +111,4 @@ public class BackgroundSocketListener extends SwingWorker<Void, Void> {
 			System.err.println("Server listening socket is encountering an error likely due socket being closed.");
 		}
 	}
-	public List<KKMultiServerThread> getSocketThreadList(){
-		
-		return socketThreadList;
-	}
 }

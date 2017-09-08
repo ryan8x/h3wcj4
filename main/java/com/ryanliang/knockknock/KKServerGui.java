@@ -218,7 +218,7 @@ public class KKServerGui extends JFrame {
 				startServerToolBarButton.setEnabled(false);
 				stopServerToolBarButton.setEnabled(true);
 				
-				connectionCheckingTask = new BackgroundConnectionCheck(socketListeningTask.getSocketThreadList(), totalClientConectionLabel);
+				connectionCheckingTask = new BackgroundConnectionCheck(totalClientConectionLabel);
 				connectionCheckingTask.execute();
 			}
 		}

@@ -12,7 +12,6 @@ import javax.swing.SwingWorker;
  * @since 1.7
  */
 public class BackgroundConnectionCheck extends SwingWorker<Void, String> {
-    private List<KKMultiServerThread> socketThreadList;
 	private JLabel totalClientConectionLabel;
     private boolean runLoop = false;
     
@@ -21,8 +20,7 @@ public class BackgroundConnectionCheck extends SwingWorker<Void, String> {
 	 * @param socketThreadList List of KKMultiServerThread objects
 	 * @param totalClientConectionLabel A reference JLabel for updating current total number of client socket connections
 	 */
-    public BackgroundConnectionCheck(List<KKMultiServerThread> socketThreadList, JLabel totalClientConectionLabel){
-    	this.socketThreadList = socketThreadList;
+    public BackgroundConnectionCheck(JLabel totalClientConectionLabel){
     	this.totalClientConectionLabel = totalClientConectionLabel;
     }
 
@@ -32,26 +30,13 @@ public class BackgroundConnectionCheck extends SwingWorker<Void, String> {
 	 */
 	@Override
 	protected Void doInBackground() throws Exception {
-		int cc=0;
-		int listSize;
+		
 		runLoop = true;
 		
 		while (runLoop){
 			Thread.sleep(1000);
-
-/*
-			listSize = socketThreadList.size();
-			publish(String.valueOf(listSize));
-
-			for (int i=0; i<listSize; i++){
-				if (!socketThreadList.get(i).isSocketAlive()){
-					socketThreadList.remove(i);   //thread safety issue causing problem?  need to resolve.
-				}
-			}
-*/
 			publish(String.valueOf(ConnectionCounter.getConnectionCounter()));
 		}
-	
 		return null;
 	}
 	
