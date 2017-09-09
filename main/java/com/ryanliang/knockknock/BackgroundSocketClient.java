@@ -110,7 +110,7 @@ public class BackgroundSocketClient extends SwingWorker<Void, String> {
 						Thread.sleep(200);
 					} catch (InterruptedException e) {
 						//e.printStackTrace();
-						System.err.println("thread sleep method is being interrupted.");
+						System.err.println("thread sleep method of client SwingWorker is being interrupted.");
 					}
 				}
 
@@ -138,10 +138,14 @@ public class BackgroundSocketClient extends SwingWorker<Void, String> {
 		
 		try {
 			if (kkSocket != null){
-				out.close();
-				out = null;
-				in.close();
-				in = null;
+				if (out != null){
+					out.close();
+					out = null;
+				}
+				if (in != null){
+					in.close();
+					in = null;
+				}
 				kkSocket.close();
 				kkSocket = null;
 				userInput = "exit";

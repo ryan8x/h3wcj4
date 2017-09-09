@@ -6,6 +6,8 @@ import java.net.SocketTimeoutException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.swing.JLabel;
 import javax.swing.SwingWorker;
@@ -18,6 +20,7 @@ import javax.swing.SwingWorker;
  */
 public class BackgroundSocketListener extends SwingWorker<Void, Void> {
 	
+	private ExecutorService executorService = Executors.newCachedThreadPool(); 
     private ServerSocket serverSocket = null;
 	private int kkServerPort;
 	private String exceptionErrorMessage = "";
@@ -67,7 +70,7 @@ public class BackgroundSocketListener extends SwingWorker<Void, Void> {
 			if (serverSocket != null){
 				serverSocket.close();
 				serverSocket = null;
-						
+
 				for (KKMultiServerThread socketThread : socketThreadList){
 					if (socketThread != null){
 						socketThread.closeConnection();
@@ -82,8 +85,8 @@ public class BackgroundSocketListener extends SwingWorker<Void, Void> {
 		}
 		finally{
 			listening = false;
+			executorService.shutdown();
 		}
-
 	}
 
 	/**
@@ -102,8 +105,8 @@ public class BackgroundSocketListener extends SwingWorker<Void, Void> {
         try {
 			while (listening){
 				KKMultiServerThread serverSocketThread = new KKMultiServerThread(serverSocket.accept());
-				socketThreadList.add(serverSocketThread);
-				serverSocketThread.start();
+				socketThreadList.add(serverSocketThread);			
+				executorService.execute(serverSocketThread);
 			}
 		}
         catch (IOException e) {

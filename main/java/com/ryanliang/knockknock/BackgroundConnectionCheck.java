@@ -29,12 +29,16 @@ public class BackgroundConnectionCheck extends SwingWorker<Void, String> {
 	 * @return null  
 	 */
 	@Override
-	protected Void doInBackground() throws Exception {
+	protected Void doInBackground(){
 		
 		runLoop = true;
 		
 		while (runLoop){
-			Thread.sleep(1000);
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				System.err.println("thread sleep method of connection checking SwingWorker is being interrupted.");
+			}
 			publish(String.valueOf(ConnectionCounter.getConnectionCounter()));
 		}
 		return null;

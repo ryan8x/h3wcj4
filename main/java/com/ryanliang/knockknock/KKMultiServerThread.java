@@ -9,7 +9,7 @@ import java.io.*;
  * @version $Revision$
  * @since 1.7
  */
-public class KKMultiServerThread extends Thread {
+public class KKMultiServerThread implements Runnable {
 	private Socket socket = null;
 	private PrintWriter out = null;
 	private BufferedReader in = null;
@@ -19,7 +19,7 @@ public class KKMultiServerThread extends Thread {
 	 * @param socket Is a socket connection with a client
 	 */
 	public KKMultiServerThread(Socket socket) {
-		super("KKMultiServerThread");
+		//super("KKMultiServerThread");
 		this.socket = socket;
 		ConnectionCounter.increaseConnectionCounter();
 	}
@@ -64,10 +64,14 @@ public class KKMultiServerThread extends Thread {
 
 		try {
 			if (socket != null){
-				out.close();
-				out = null;
-				in.close();
-				in = null;
+				if (out != null){
+					out.close();
+					out = null;
+				}
+				if (in != null){
+					in.close();
+					in = null;
+				}
 				socket.close();
 				socket = null;
 			}

@@ -33,4 +33,12 @@ public class ConnectionCounter {
 		//This method needs to be synchronized as multiple client connections can be disconnected simultaneously.
 		connectionCounter--;
 	}
+	
+	/**
+	 * This method resets the counter to zero. 
+	 */
+	public static synchronized void resetConnectionCounter() {
+
+		connectionCounter = 0;
+	}
 }

@@ -185,19 +185,27 @@ public class KKServerGui extends JFrame {
 	 * This method stops the server.
 	 */
 	private void stopServer() {
-		
+
 		if (socketListeningTask != null){
 			socketListeningTask.stopServer();
+			
+			try {
+				//Sleep time is needed to prevent connection counter being reset too soon before socketListeningTask.stopServer() is completed.  Sleep time may need to be increased if not enough.
+				Thread.sleep(200);
+			} catch (InterruptedException e) {
+				System.err.println("thread sleep method of KKServerGUI is being interrupted.");
+			}
+			
+			ConnectionCounter.resetConnectionCounter();
 			socketListeningTask = null;
 			serverStatusLabel.setText(serverStopped);
 			totalClientConectionLabel.setText("Client connections: 0");
-			
+
 			startServerToolBarButton.setEnabled(true);
 			stopServerToolBarButton.setEnabled(false);
-			
+
 			connectionCheckingTask.stopCheckingConnection();
 		}
-
 	}
 
 	/**
@@ -211,7 +219,8 @@ public class KKServerGui extends JFrame {
 		if (kkJokeList.size() > 0){
 			if (socketListeningTask == null){
 				socketListeningTask = new BackgroundSocketListener(kkServerPort, serverStatusLabel);
-				socketListeningTask.execute();	
+				socketListeningTask.execute();
+				ConnectionCounter.resetConnectionCounter();
 				serverStatusLabel.setText(serverStarted);
 				totalClientConectionLabel.setText("Client connections: 0");
 
