@@ -3,6 +3,8 @@ package com.ryanliang.knockknock;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -35,8 +37,8 @@ public class BackgroundSocketClient extends SwingWorker<Void, String> {
 	
 	private String exceptionErrorMessage = "";
 	
-	private PrintWriter out = null;
-	private BufferedReader in  = null;
+	private ObjectOutputStream out = null;
+	private ObjectInputStream in = null;
     
 	/**
 	 * This is the only constructor defined for this class.
@@ -89,16 +91,15 @@ public class BackgroundSocketClient extends SwingWorker<Void, String> {
 	private void connectToServer() {
 		try {
 			kkSocket = new Socket(InetAddress.getByName(kkServerHost), kkServerPort);
-			out = new PrintWriter(kkSocket.getOutputStream(), true);
-			in = new BufferedReader(new InputStreamReader(kkSocket.getInputStream()));
-
-			//BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
+			out = new ObjectOutputStream(kkSocket.getOutputStream());
+			in = new ObjectInputStream(kkSocket.getInputStream());
+			
 			String fromServer;
 
-			while ((fromServer = in.readLine()) != null) {
+			while ((fromServer = (String) in.readObject()) != null) {
 
 				publish(fromServer);
-				
+
 				if (fromServer.equals("Bye")){
 					break;
 				}
@@ -115,17 +116,19 @@ public class BackgroundSocketClient extends SwingWorker<Void, String> {
 				}
 
 				if (userInput != null) {
-					out.println(userInput);
+					out.writeObject(userInput);
 					userInput = null;
 				}
 			}
+		} catch (ClassNotFoundException e) {
+			System.err.println("Client side socket network communication error is encountered for some reason.");
 		} catch (UnknownHostException e) {
 			exceptionErrorMessage = "Don't know about host " + kkServerHost;
 			System.err.println(exceptionErrorMessage);
 		} catch (IOException e) {
 			exceptionErrorMessage = "Couldn't get I/O for the connection to " + kkServerHost + ":" + kkServerPort;
 			System.err.println(exceptionErrorMessage);
-		}
+		} 
 		finally{
 			stopServer();
 		}

@@ -11,15 +11,14 @@ import java.io.*;
  */
 public class KKMultiServerThread implements Runnable {
 	private Socket socket = null;
-	private PrintWriter out = null;
-	private BufferedReader in = null;
+	private ObjectOutputStream out = null;
+	private ObjectInputStream in = null;
 	
 	/**
 	 * This is the only constructor defined for this class.
 	 * @param socket Is a socket connection with a client
 	 */
 	public KKMultiServerThread(Socket socket) {
-		//super("KKMultiServerThread");
 		this.socket = socket;
 		ConnectionCounter.increaseConnectionCounter();
 	}
@@ -30,24 +29,22 @@ public class KKMultiServerThread implements Runnable {
 	public void run() {
 
 		try {
-			out = new PrintWriter(socket.getOutputStream(), true);
-			in = new BufferedReader(
-					new InputStreamReader(
-							socket.getInputStream()));
-
+			out = new ObjectOutputStream(socket.getOutputStream());
+			in = new ObjectInputStream(socket.getInputStream());
+			
 			String inputLine, outputLine;
 			KnockKnockProtocol kkp = new KnockKnockProtocol();
 			outputLine = kkp.processInput(null);
-			out.println(outputLine);
+			out.writeObject(outputLine);
 
-			//Readline() returns null when client side socket is closed.	
-			while ((inputLine = in.readLine()) != null) {
+			//readObject() returns null when client side socket is closed.	
+			while ((inputLine = (String) in.readObject()) != null) {
 				outputLine = kkp.processInput(inputLine);
-				out.println(outputLine);
+				out.writeObject(outputLine);
 				if (outputLine.equals("Bye"))  
 					break;
 			}
-		} catch (IOException e) {
+		} catch (IOException | ClassNotFoundException e) {
 			//e.printStackTrace();
 			System.err.println("Server side socket network communication error is encountered for some reason.");
 		}
