@@ -260,6 +260,7 @@ public class KKServerGui extends JFrame {
 			FileOutputStream fileOut = new FileOutputStream("server-info.dat");
 			out = new ObjectOutputStream(fileOut);
 			out.writeObject(kkServerPort);
+			out.flush();
 		} catch (FileNotFoundException e) {
 			System.err.println("saving server-info.dat file is encountering an error for some reason.");	
 		} catch (IOException e) {

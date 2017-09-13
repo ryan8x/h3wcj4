@@ -230,6 +230,7 @@ public class KKClientGui extends JFrame {
 			ObjectOutputStream out = new ObjectOutputStream(fileOut);
 			out.writeObject(kkServerHost);
 			out.writeObject(kkServerPort);
+			out.flush();
 			out.close();
 		} catch (Exception e) {
 			//e.printStackTrace();

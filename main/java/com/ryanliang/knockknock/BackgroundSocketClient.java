@@ -1,18 +1,13 @@
 package com.ryanliang.knockknock;
 
-import java.io.BufferedReader;
+
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
 import java.net.InetAddress;
-import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
@@ -26,7 +21,7 @@ import javax.swing.SwingWorker;
  */
 public class BackgroundSocketClient extends SwingWorker<Void, String> {
 	
-	private String userInput = null;
+	private String userInput = "";
     private JTextArea chatTextArea;
     private JLabel connectionStatusLabel;
     
@@ -39,6 +34,8 @@ public class BackgroundSocketClient extends SwingWorker<Void, String> {
 	
 	private ObjectOutputStream out = null;
 	private ObjectInputStream in = null;
+	
+	private KKProtocolState state = KKProtocolState.WAITING;
     
 	/**
 	 * This is the only constructor defined for this class.
@@ -94,30 +91,48 @@ public class BackgroundSocketClient extends SwingWorker<Void, String> {
 			out = new ObjectOutputStream(kkSocket.getOutputStream());
 			in = new ObjectInputStream(kkSocket.getInputStream());
 			
-			String fromServer;
+			KKServerResponse fromServer;
 
-			while ((fromServer = (String) in.readObject()) != null) {
+			while ((fromServer = (KKServerResponse) in.readObject()) != null) {
 
-				publish(fromServer);
+				publish(fromServer.getKnockKnock());
+				state = KKProtocolState.SENTKNOCKKNOCK;
 
-				if (fromServer.equals("Bye")){
-					break;
-				}
-
-				//wait for user input
-				while (userInput == null)
-				{
-					try {
-						Thread.sleep(200);
-					} catch (InterruptedException e) {
-						//e.printStackTrace();
-						System.err.println("thread sleep method of client SwingWorker is being interrupted.");
+				while (!userInput.equalsIgnoreCase("bye")){
+				
+					if (state == KKProtocolState.SENTKNOCKKNOCK) {
+						if (userInput.equalsIgnoreCase(fromServer.getWhoIsThere())){
+							publish(fromServer.getJoke().getClue());
+							state = KKProtocolState.SENTCLUE;
+						}
+						else{
+							publish(fromServer.getSuppose() + fromServer.getWhoIsThere() + fromServer.getTryAgain());
+						}
 					}
-				}
-
-				if (userInput != null) {
-					out.writeObject(userInput);
-					userInput = null;
+					else if (state == KKProtocolState.SENTCLUE) {
+						if (userInput.equalsIgnoreCase(fromServer.getJoke().getClue() + fromServer.getWho())){
+							publish(fromServer.getJoke().getAnswer() + fromServer.getWantMore());	
+							state = KKProtocolState.ANOTHER;
+						}
+						else{
+							publish(fromServer.getSuppose() + fromServer.getJoke().getClue() + fromServer.getWho() + fromServer.getTryAgain());
+							state = KKProtocolState.SENTKNOCKKNOCK;
+						}
+					}
+					else if (state == KKProtocolState.ANOTHER) {
+						if (userInput.equalsIgnoreCase("y")){
+							out.writeObject("y");
+							out.flush();
+						}
+						else{
+							out.writeObject("n");
+							out.flush();
+						}
+						state = KKProtocolState.WAITING;
+						break;
+					}
+					userInput = "";
+					waitForInput();
 				}
 			}
 		} catch (ClassNotFoundException e) {
@@ -134,11 +149,24 @@ public class BackgroundSocketClient extends SwingWorker<Void, String> {
 		}
 	}
 	
+	private void waitForInput() {
+		//wait for user input
+		while (userInput.equals(""))
+		{
+			try {
+				Thread.sleep(200);
+			} catch (InterruptedException e) {
+				//e.printStackTrace();
+				System.err.println("thread sleep method of client SwingWorker is being interrupted.");
+			}
+		}
+	}
+
 	/**
 	 * This method is for freeing up resources. 
 	 */
 	public void stopServer() {
-		
+		userInput = "bye";
 		try {
 			if (kkSocket != null){
 				if (out != null){
@@ -151,7 +179,6 @@ public class BackgroundSocketClient extends SwingWorker<Void, String> {
 				}
 				kkSocket.close();
 				kkSocket = null;
-				userInput = "exit";
 			}
 		} catch (IOException e) {
 			//e.printStackTrace();

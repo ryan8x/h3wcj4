@@ -1,13 +1,19 @@
 package com.ryanliang.knockknock;
 
+import java.io.Serializable;
+
 /**
  * KKJoke class defines the data structure for knock knock joke's clue and answer. 
  * @author Ryan L.
  * @version $Revision$
  * @since 1.7
  */
-public class KKJoke {
+public class KKJoke implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1719703311237581677L;
 	private final String clue;
 	private final String answer;
 	

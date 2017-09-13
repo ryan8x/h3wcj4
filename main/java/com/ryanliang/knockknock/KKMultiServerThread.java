@@ -32,17 +32,23 @@ public class KKMultiServerThread implements Runnable {
 			out = new ObjectOutputStream(socket.getOutputStream());
 			in = new ObjectInputStream(socket.getInputStream());
 			
-			String inputLine, outputLine;
+			String inputLine;
+			KKJoke outputLine;
 			KnockKnockProtocol kkp = new KnockKnockProtocol();
-			outputLine = kkp.processInput(null);
-			out.writeObject(outputLine);
-
+			outputLine = kkp.processInput();
+			out.writeObject(new KKServerResponse(outputLine));
+			out.flush();
+			
 			//readObject() returns null when client side socket is closed.	
 			while ((inputLine = (String) in.readObject()) != null) {
-				outputLine = kkp.processInput(inputLine);
-				out.writeObject(outputLine);
-				if (outputLine.equals("Bye"))  
+				if (inputLine.equalsIgnoreCase("y")){
+					outputLine = kkp.processInput();
+					out.writeObject(new KKServerResponse(outputLine));
+					out.flush();
+				}
+				else if (inputLine.equalsIgnoreCase("bye") || inputLine.equalsIgnoreCase("n")){ 
 					break;
+				}
 			}
 		} catch (IOException | ClassNotFoundException e) {
 			//e.printStackTrace();
